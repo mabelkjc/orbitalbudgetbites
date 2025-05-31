@@ -90,6 +90,7 @@ function MainPage() {
         ))}
         <input
           type="text"
+          className = "mainFormat"
           placeholder="Other preference"
           value={otherPrefs}
           onChange={(e) => setOtherPrefs(e.target.value)}
@@ -110,6 +111,7 @@ function MainPage() {
         ))}
         <input
           type="text"
+          className = "mainFormat"
           placeholder="Other allergy"
           value={otherAllergies}
           onChange={(e) => setOtherAllergies(e.target.value)}
@@ -128,8 +130,9 @@ function MainPage() {
             {item}
           </label>
         ))}
-        <input
+        <input 
           type="text"
+          className = "mainFormat"
           placeholder="Other restriction"
           value={otherRestrictions}
           onChange={(e) => setOtherRestrictions(e.target.value)}

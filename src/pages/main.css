@@ -25,7 +25,7 @@ input[type="checkbox"] {
   margin-right: 8px;
 }
 
-input[type="text"] {
+.mainFormat {
   margin-top: 10px;
   padding: 10px;
   font-size: 14px;
