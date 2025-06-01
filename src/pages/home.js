@@ -19,13 +19,13 @@ function HomePage() {
   };
 
   return (
-    <div className="home-wrapper">
-      {/* Top Navigation Bar */}
-      <div className="top-bar">
-        <div className="top-left">
-          <a href="#">COMMUNITY</a>
-          <a href="#">RECIPE INDEX</a>
-          <a href="#">POPULAR</a>
+  <div className="home-wrapper">
+    <div className="top-bar">
+
+      <div className="top-left">
+        <a href="#">COMMUNITY</a>
+        <a href="#">RECIPE INDEX</a>
+        <a href="#">POPULAR</a>
         </div>
         <div className="top-right">
           <span className="user-icon"></span>
@@ -42,13 +42,11 @@ function HomePage() {
         </div>
       </div>
 
-      {/* Search Bar */}
       <div className="search-bar">
         <input type="text" placeholder="Search" />
         <button className="search-btn">⌕</button>
       </div>
 
-      {/* Hero Section */}
       <div className="hero">
         <div className="hero-text">
           <h1><strong>Chicken Recipes You'll Love</strong></h1>
@@ -56,9 +54,7 @@ function HomePage() {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="main-content">
-        {/* Ingredient Category Filters */}
         <aside className="filters">
           <h2>Ingredient Categories</h2>
           <div className="filter-group">
@@ -70,6 +66,7 @@ function HomePage() {
               <option>Pasta</option>
             </select>
           </div>
+
           <div className="filter-group">
             <label htmlFor="protein-select">Protein</label>
             <select id="protein-select">
@@ -80,6 +77,7 @@ function HomePage() {
               <option>Shrimp</option>
             </select>
           </div>
+
           <div className="filter-group">
             <label htmlFor="veg-select">Vegetables</label>
             <select id="veg-select">
@@ -90,6 +88,7 @@ function HomePage() {
               <option>Tomato</option>
             </select>
           </div>
+
           <div className="filter-group">
             <label htmlFor="fruit-select">Fruits</label>
             <select id="fruit-select">
@@ -99,6 +98,7 @@ function HomePage() {
               <option>Strawberry</option>
             </select>
           </div>
+
           <div className="filter-group">
             <label htmlFor="dairy-select">Dairy</label>
             <select id="dairy-select">
@@ -110,14 +110,17 @@ function HomePage() {
           </div>
         </aside>
 
-        {/* Recipe Suggestions Section */}
         <section className="recipes">
           <nav className="main-nav">
             <a href="#">Home</a>
             <a href="#">Explore</a>
             <a href="#">Help</a>
           </nav>
+          <div className="image-container">
+            <img src="/image.png" alt="Delicious Recipes" className="recipe-image" />
+          </div>
         </section>
+        
       </div>
     </div>
   );
