@@ -40,27 +40,66 @@ function LoginPage() {
   };
 
   return (
-    <div className="overall-page">
-      <form className="login-section" onSubmit={handleLogin}>
-        <div className="details">
-          <h1>Log In</h1>
-          <label>Email</label>
-          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-          <label>Password</label>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-          <button type="submit" className="login-btn">Log In</button>
+    <div className="landing-container">
+      
+      <header
+        className="landing-header">
+        <img src="/budgetbites-nobg.png" alt="Budget Bites Logo" className="landing-logo" />
+        <h1 className="headline">Tired of wondering what to cook?</h1>
+        <div className="tagline">
+          <p>Let <span className="highlight">Budget Bites</span> turn your fridge into a feast.</p>
+          <p>Quick, smart, budget-friendly meal ideas — <span className="highlight">just for you.</span></p>
         </div>
-      </form>
+        <Link to="/registration">
+          <button className="cta-button">Get Started Free</button>
+        </Link>
+      </header>
 
-      <div className="signup-section">
-        <div className="group">
-          <h2>New to BudgetBites?</h2>
-          <p>Join us today and start planning delicious, budget-friendly meals with ease!</p>
-          <Link to="/registration">
-            <button className="signup-btn">Sign Up</button>
-          </Link>
+      <section className="features-section">
+        <div className="features">
+          <div className="feature">
+            <h3>🥕 Smart Recipe Suggestions</h3>
+            <p>Get instant, personalised meal ideas based on what’s in your fridge.</p>
+          </div>
+          <div className="feature">
+            <h3>🛒 Grocery Finder</h3>
+            <p>Missing something? Find the nearest store with our Google Maps tool.</p>
+          </div>
+          <div className="feature">
+            <h3>👩‍🍳 Share & Discover</h3>
+            <p>Upload your creations, rate recipes, and exchange tips with friends.</p>
+          </div>
         </div>
-      </div>
+      </section>
+
+      <section className="login-section">
+        <h2>Already have an account?</h2>
+        <form className="login-form" onSubmit={handleLogin}>
+          <label>Email</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+
+          <label>Password</label>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+
+          <button type="submit" className="login-btn">Log In</button>
+        </form>
+      </section>
+
+      <footer className="bottom-cta">
+        <p className="confidence-text">
+          Built by students. Loved by students.
+        </p>
+      </footer>
     </div>
   );
 }
