@@ -1,6 +1,6 @@
 # Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).\
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ReadMe documentation for this Budget Bites project can be found [here](https://docs.google.com/document/d/1Q2LOIvlnj1ypimhvE7fJAx_X2yzADjOjT8mOy89FXXg/edit?usp=sharing).
 
