@@ -5,7 +5,6 @@ import Registration from "./pages/registration.js";
 import Main from './pages/main.js';
 import HomePage from './pages/home';
 
-
 function App() {
   return (
     <Router>
@@ -14,7 +13,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/registration" element={<Registration />} />
-          <Route path="/main" element={<Main />} />
+          <Route path="/profile" element={<Main />} />
           <Route path="/home" element={<HomePage />} />
         </Routes>
       </div>
@@ -23,5 +22,6 @@ function App() {
 }
 
 export default App;
+
 
 

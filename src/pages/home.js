@@ -1,16 +1,45 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { auth } from '../firebase';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../firebase';
 import './home.css';
 
 function HomePage() {
   const navigate = useNavigate();
+  
+  const availableIngredients = {
+    "Grains & Starches": ['Rice', 'Quinoa', 'Oats', 'Pasta', 'Flour'],
+    "Proteins (Non-Seafood)": ['Chicken', 'Eggs', 'Tofu', 'Beef', 'Pork', 'Lamb'],
+    Seafood: ['Shrimp', 'Mussels', 'Salmon', 'Crab', 'Tuna'],
+    "Fruits & Vegetables": ['Banana', 'Mango', 'Spinach', 'Onion', 'Broccoli', 'Apple'],
+    Dairy: ['Milk', 'Cheese', 'Yogurt', 'Butter', 'Cream']
+  };
+
+  const [selectedIngredients, setSelectedIngredients] = useState([]);
+  const [userAllergies, setUserAllergies] = useState([]);
+  const [userRestrictions, setUserRestrictions] = useState([]);
+  const [userPreferences, setUserPreferences] = useState([]);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
 
   useEffect(() => {
-    if (!auth.currentUser) {
-      navigate('/login');
-    }
+    const fetchData = async () => {
+      if (!auth.currentUser) {
+        navigate('/login');
+        return;
+      }
+
+      const ref = doc(db, 'users', auth.currentUser.uid);
+      const docSnap = await getDoc(ref);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setUserAllergies(data.allergies || []);
+        setUserRestrictions(data.restrictions || []);
+        setUserPreferences(data.dietaryPreferences || []);
+      }
+    };
+    fetchData();
   }, [navigate]);
 
   const handleLogout = async () => {
@@ -18,112 +47,91 @@ function HomePage() {
     navigate('/login');
   };
 
+  const handleSearch = () => {
+    navigate('/recipes');
+  };
+
+  const handleDropdownToggle = () => {
+    setDropdownVisible(!dropdownVisible);
+  };
+
+  const handleMultiSelect = (category, item) => {
+    setSelectedIngredients((prev) =>
+      prev.includes(item)
+        ? prev.filter((i) => i !== item)
+        : [...prev, item]
+    );
+  };
+
   return (
-  <div className="home-wrapper">
-    <div className="top-bar">
-
-      <div className="top-left">
-        <a href="#">COMMUNITY</a>
-        <a href="#">RECIPE INDEX</a>
-        <a href="#">POPULAR</a>
+    <div className="home-wrapper">
+      <div className="top-bar">
+        <nav className="nav-links">
+          <Link to="/community">Community</Link>
+          <Link to="/index">Recipe Index</Link>
+        </nav>
+        <div className="logo">
+          <img src="/budgetbitesfinal.png" alt="Budget Bites Logo" />
         </div>
-        <div className="top-right">
+        <div className="profile-menu">
           <span className="user-icon"></span>
-          <div className="dropdown">
-            <button className="dropbtn">▼</button>
+          <button className="dropbtn" onClick={handleDropdownToggle}>▼</button>
+          {dropdownVisible && (
             <div className="dropdown-content">
-              <a href="#">Profile</a>
-              <a href="#">Privacy</a>
-              <a href="#">Collections</a>
-              <a href="#">Settings</a>
-              <a href="#" onClick={handleLogout}>Logout</a>
+              <Link to="/profile">Profile</Link>
+              <button onClick={handleLogout}>Logout</button>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
-      <div className="search-bar">
-        <input type="text" placeholder="Search" />
-        <button className="search-btn">⌕</button>
-      </div>
-
-      <div className="hero">
-        <div className="hero-text">
-          <h1><strong>Chicken Recipes You'll Love</strong></h1>
-          <button className="more-btn">More</button>
-        </div>
-      </div>
-
-      <div className="main-content">
-        <aside className="filters">
-          <h2>Ingredient Categories</h2>
-          <div className="filter-group">
-            <label htmlFor="grain-select">Grains</label>
-            <select id="grain-select">
-              <option>Rice</option>
-              <option>Oats</option>
-              <option>Quinoa</option>
-              <option>Pasta</option>
-            </select>
+      <div className="main-section">
+        <aside className="sidebar">
+          <h3>Dietary Preference:</h3>
+          <div className="pill-grid">
+            {userPreferences.length > 0 ? userPreferences.map((p) => (
+              <span key={p} className="pill">{p}</span>
+            )) : <span className="pill">None</span>}
           </div>
 
-          <div className="filter-group">
-            <label htmlFor="protein-select">Protein</label>
-            <select id="protein-select">
-              <option>Chicken</option>
-              <option>Eggs</option>
-              <option>Tofu</option>
-              <option>Beef</option>
-              <option>Shrimp</option>
-            </select>
+          <h3>Allergies:</h3>
+          <div className="pill-grid">
+            {userAllergies.length > 0 ? userAllergies.map((a) => (
+              <span key={a} className="pill">{a}</span>
+            )) : <span className="pill">None</span>}
           </div>
 
-          <div className="filter-group">
-            <label htmlFor="veg-select">Vegetables</label>
-            <select id="veg-select">
-              <option>Broccoli</option>
-              <option>Spinach</option>
-              <option>Carrot</option>
-              <option>Bell Pepper</option>
-              <option>Tomato</option>
-            </select>
+          <h3>Restrictions:</h3>
+          <div className="pill-grid">
+            {userRestrictions.length > 0 ? userRestrictions.map((r) => (
+              <span key={r} className="pill">{r}</span>
+            )) : <span className="pill">None</span>}
           </div>
 
-          <div className="filter-group">
-            <label htmlFor="fruit-select">Fruits</label>
-            <select id="fruit-select">
-              <option>Apple</option>
-              <option>Banana</option>
-              <option>Orange</option>
-              <option>Strawberry</option>
-            </select>
-          </div>
-
-          <div className="filter-group">
-            <label htmlFor="dairy-select">Dairy</label>
-            <select id="dairy-select">
-              <option>Milk</option>
-              <option>Cheese</option>
-              <option>Yogurt</option>
-              <option>Butter</option>
-            </select>
-          </div>
+          <h3>Select your ingredients:</h3>
+          {Object.entries(availableIngredients).map(([category, items]) => (
+            <div key={category} className="filter-category">
+              <div className="filter-header">{category}</div>
+              <div className="checkbox-list">
+                {items.map((item) => (
+                  <label key={item} className="checkbox-item">
+                    <input
+                      type="checkbox"
+                      checked={selectedIngredients.includes(item)}
+                      onChange={() => handleMultiSelect(category, item)}
+                    />
+                    {item}
+                  </label>
+                ))}
+              </div>
+            </div>
+          ))}
+          <button onClick={handleSearch} className="search-btn">Update & Search</button>
         </aside>
-
-        <section className="recipes">
-          <nav className="main-nav">
-            <a href="#">Home</a>
-            <a href="#">Explore</a>
-            <a href="#">Help</a>
-          </nav>
-          <div className="image-container">
-            <img src="/image.png" alt="Delicious Recipes" className="recipe-image" />
-          </div>
-        </section>
-        
       </div>
     </div>
   );
 }
 
 export default HomePage;
+
