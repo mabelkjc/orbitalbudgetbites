@@ -8,11 +8,20 @@ import './home.css';
 
 function HomePage() {
   const navigate = useNavigate();
-  const [availableIngredients, setAvailableIngredients] = useState([]);
+  
+  const availableIngredients = {
+    "Grains & Starches": ['Rice', 'Quinoa', 'Oats', 'Pasta', 'Flour'],
+    "Proteins (Non-Seafood)": ['Chicken', 'Eggs', 'Tofu', 'Beef', 'Pork', 'Lamb'],
+    Seafood: ['Shrimp', 'Mussels', 'Salmon', 'Crab', 'Tuna'],
+    "Fruits & Vegetables": ['Banana', 'Mango', 'Spinach', 'Onion', 'Broccoli', 'Apple'],
+    Dairy: ['Milk', 'Cheese', 'Yogurt', 'Butter', 'Cream']
+  };
+
   const [selectedIngredients, setSelectedIngredients] = useState([]);
   const [userAllergies, setUserAllergies] = useState([]);
   const [userRestrictions, setUserRestrictions] = useState([]);
   const [userPreferences, setUserPreferences] = useState([]);
+  const [dropdownVisible, setDropdownVisible] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,14 +38,6 @@ function HomePage() {
         setUserRestrictions(data.restrictions || []);
         setUserPreferences(data.dietaryPreferences || []);
       }
-
-      setAvailableIngredients([
-        'Basil', 'Chicken', 'Vegetable oil', 'Cucumbers', 'Broccoli',
-        'Parsley', 'Carrots', 'Milk', 'Oranges', 'Bananas',
-        'Sugar', 'Honey', 'Flour', 'Vanilla', 'Olive oil',
-        'Shrimps', 'Potatoes', 'Rice', 'Tomatoes', 'Salt',
-        'Lemons', 'Garlic', 'Onions', 'Butter', 'Water', 'Eggs', 'Red chillies'
-      ]);
     };
     fetchData();
   }, [navigate]);
@@ -46,104 +47,87 @@ function HomePage() {
     navigate('/login');
   };
 
-  const toggleIngredient = (ingredient) => {
-    setSelectedIngredients((prev) =>
-      prev.includes(ingredient)
-        ? prev.filter((i) => i !== ingredient)
-        : [...prev, ingredient]
-    );
-  };
-
   const handleSearch = () => {
     navigate('/recipes');
+  };
+
+  const handleDropdownToggle = () => {
+    setDropdownVisible(!dropdownVisible);
+  };
+
+  const handleMultiSelect = (category, item) => {
+    setSelectedIngredients((prev) =>
+      prev.includes(item)
+        ? prev.filter((i) => i !== item)
+        : [...prev, item]
+    );
   };
 
   return (
     <div className="home-wrapper">
       <div className="top-bar">
-        <div className="top-left">
-          <Link to="/community">COMMUNITY</Link>
-          <Link to="/index">RECIPE INDEX</Link>
-          <Link to="/popular">POPULAR</Link>
+        <nav className="nav-links">
+          <Link to="/community">Community</Link>
+          <Link to="/index">Recipe Index</Link>
+        </nav>
+        <div className="logo">
+          <img src="/budgetbitesfinal.png" alt="Budget Bites Logo" />
         </div>
-        <div className="top-right">
+        <div className="profile-menu">
           <span className="user-icon"></span>
-          <div className="dropdown">
-            <button className="dropbtn">▼</button>
+          <button className="dropbtn" onClick={handleDropdownToggle}>▼</button>
+          {dropdownVisible && (
             <div className="dropdown-content">
               <Link to="/profile">Profile</Link>
-              <Link to="#" onClick={handleLogout}>Logout</Link>
+              <button onClick={handleLogout}>Logout</button>
             </div>
-          </div>
+          )}
         </div>
       </div>
 
-      <div className="main-content">
-        <aside className="filters">
-          <h2>
-            Your Preferences
-            <div className="subheading">Based on your profile</div>
-          </h2>
-          <div className="filter-group">
-            <label>Dietary Preferences:</label>
-            <div className="pill-grid">
-              {userPreferences.length > 0 ? userPreferences.map((p) => (
-                <span key={p} className="pill green">{p}</span>
-              )) : <span className="pill green">None</span>}
-            </div>
+      <div className="main-section">
+        <aside className="sidebar">
+          <h3>Dietary Preference:</h3>
+          <div className="pill-grid">
+            {userPreferences.length > 0 ? userPreferences.map((p) => (
+              <span key={p} className="pill">{p}</span>
+            )) : <span className="pill">None</span>}
           </div>
 
-          <div className="filter-group">
-            <label>Allergies:</label>
-            <div className="pill-grid">
-              {userAllergies.length > 0 ? userAllergies.map((a) => (
-                <span key={a} className={`pill ${a === 'None' ? 'green' : 'red'}`}>{a}</span>
-              )) : <span className="pill green">None</span>}
-            </div>
+          <h3>Allergies:</h3>
+          <div className="pill-grid">
+            {userAllergies.length > 0 ? userAllergies.map((a) => (
+              <span key={a} className="pill">{a}</span>
+            )) : <span className="pill">None</span>}
           </div>
 
-          <div className="filter-group">
-            <label>Restrictions:</label>
-            <div className="pill-grid">
-              {userRestrictions.length > 0 ? userRestrictions.map((r) => (
-                <span key={r} className="pill green">{r}</span>
-              )) : <span className="pill green">None</span>}
-            </div>
+          <h3>Restrictions:</h3>
+          <div className="pill-grid">
+            {userRestrictions.length > 0 ? userRestrictions.map((r) => (
+              <span key={r} className="pill">{r}</span>
+            )) : <span className="pill">None</span>}
           </div>
 
-          <div className="edit-link" style={{ textAlign: 'center' }}>
-            <Link to="/profile">
-              <button className="profile-btn">Edit in Profile</button>
-            </Link>
-          </div>
+          <h3>Select your ingredients:</h3>
+          {Object.entries(availableIngredients).map(([category, items]) => (
+            <div key={category} className="filter-category">
+              <div className="filter-header">{category}</div>
+              <div className="checkbox-list">
+                {items.map((item) => (
+                  <label key={item} className="checkbox-item">
+                    <input
+                      type="checkbox"
+                      checked={selectedIngredients.includes(item)}
+                      onChange={() => handleMultiSelect(category, item)}
+                    />
+                    {item}
+                  </label>
+                ))}
+              </div>
+            </div>
+          ))}
+          <button onClick={handleSearch} className="search-btn">Update & Search</button>
         </aside>
-
-        <div className="ingredient-section">
-          <h2>What's in Your Kitchen?</h2>
-          <div className="ingredient-input">
-            <input placeholder="Type to search..." />
-          </div>
-          <div className="ingredient-list">
-            {availableIngredients.map((ingredient) => (
-              <button
-                key={ingredient}
-                className={`pill ${selectedIngredients.includes(ingredient) ? 'selected' : ''}`}
-                onClick={() => toggleIngredient(ingredient)}
-              >
-                {ingredient}
-              </button>
-            ))}
-          </div>
-          <div className="selected-section">
-            <h3>Selected Ingredients</h3>
-            <div className="pill-grid">
-              {selectedIngredients.map((ingredient) => (
-                <span key={ingredient} className="pill selected">{ingredient}</span>
-              ))}
-            </div>
-            <button onClick={handleSearch} className="search-btn">Search Recipes</button>
-          </div>
-        </div>
       </div>
     </div>
   );

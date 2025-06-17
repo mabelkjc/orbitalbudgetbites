@@ -197,7 +197,7 @@ function MainPage() {
         </div>
       </section>
 
-      <button onClick={saveChanges}>Save Preferences</button>
+      <button onClick={saveChanges} className="save-button">Save Preferences</button>
     </div>
   );
 }
