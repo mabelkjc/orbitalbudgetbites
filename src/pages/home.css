@@ -1,12 +1,14 @@
-/* home.css */
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&display=swap');
 
-body {
+body, html {
   margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 0;
+  font-family: 'Lora', serif;
+  background-color: white;
 }
 
 .home-wrapper {
-  background-color: white; 
+  background-color: white;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -56,8 +58,8 @@ body {
 }
 
 .user-icon {
-  width: 28px;
-  height: 28px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   background-color: #d8d8d8;
 }
@@ -111,7 +113,7 @@ body {
   background-color: #fff3d6;
   padding: 1.5rem;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .sidebar h3 {
