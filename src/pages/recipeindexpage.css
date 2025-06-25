@@ -1,0 +1,59 @@
+/* recipeindexpage.css */
+
+.recipe-index-wrapper {
+  background-color: white; /* ✅ Set background to white */
+  min-height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.recipe-index-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.recipe-index-header {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
+
+.recipe-index-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.recipe-search-input {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  width: 300px;
+  max-width: 100%;
+}
+
+.recipe-sort-dropdown-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+}
+
+.recipe-sort-dropdown {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.recipe-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* ✅ Exactly 3 cards per row */
+  gap: 1.5rem;
+}
+
+
+

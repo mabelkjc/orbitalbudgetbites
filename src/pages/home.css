@@ -5,7 +5,6 @@ body, html {
   padding: 0;
   font-family: 'Lora', serif;
   background-color: white;
-
 }
 
 .home-wrapper {
@@ -105,16 +104,37 @@ body, html {
 
 .main-section {
   display: flex;
-  padding: 2rem;
-  background-color: white;
+  padding: 2rem; /* Apply equal padding all around */
 }
 
 .sidebar {
-  width: 300px;
+  width: 320px;
+  height: 1425px;
+  overflow-y: auto;
+  padding: 20px;
   background-color: #fff3d6;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-radius: 20px;
+  box-sizing: border-box;
+  scrollbar-gutter: stable both-edges; /* Reserves space to avoid layout shift */
+  position: relative; /* Needed for clipping scrollbar inside */
+}
+
+
+.sidebar::-webkit-scrollbar {
+  width: 9.5px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+  margin-top: 10px;  /* prevent top overflow */
+  margin-bottom: 10px; /* prevent bottom overflow */
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: #c4c4c4;
+  border-radius: 10px;
+  border: 2px solid transparent;  /* space around scrollbar */
+  background-clip: content-box;
 }
 
 .sidebar h3 {
@@ -197,13 +217,74 @@ body, html {
   vertical-align: middle;
 }
 
-.search-btn {
+.search-btn, .clear-btn {
   margin-top: 1rem;
-  background-color: #1e4b26;
+  background-color: #2e7d32;
   color: white;
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 6px;
   cursor: pointer;
   width: 100%;
+  font-size: 0.9rem;
+  font-weight: 600;
 }
+
+.clear-btn {
+  margin-top: 0.5rem;
+}
+
+.recipe-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  justify-content: end;
+  gap: 70px;
+  padding-left: 4rem;
+  row-gap: 35px;
+  position: relative;
+}
+
+.recipe-count {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.recipe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.sidebar {
+  margin-top: 1.5rem;  /* Only moves the sidebar */
+  margin-left: 2rem;
+}
+
+.recipe-list {
+  margin-top: 0.5rem;    /* Only moves the recipe cards */
+}
+
+.centered-search-message {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: -30px;
+  text-align: center;
+  font-size: 1.2rem;
+  font-weight: 600;
+  pointer-events: none;
+
+  max-width: 600px;             /* Limit width for clean wrapping */
+  white-space: normal;          /* Allow wrapping */
+  word-break: break-word;       /* Wrap normally without splitting words */
+  line-height: 1.5;             /* Better spacing between lines */
+}
+
+
+
+
+
+

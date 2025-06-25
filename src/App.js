@@ -4,6 +4,8 @@ import Login from "./pages/login.js";
 import Registration from "./pages/registration.js";
 import Main from './pages/main.js';
 import HomePage from './pages/home';
+import RecipeDetail from './pages/recipedetailpage.js';
+import RecipeIndexPage from './pages/recipeindexpage.js';
 
 function App() {
   return (
@@ -15,6 +17,8 @@ function App() {
           <Route path="/registration" element={<Registration />} />
           <Route path="/profile" element={<Main />} />
           <Route path="/home" element={<HomePage />} />
+          <Route path="/recipe/:id" element={<RecipeDetail />} />
+          <Route path="/recipeindex" element={<RecipeIndexPage />} />
         </Routes>
       </div>
     </Router>
