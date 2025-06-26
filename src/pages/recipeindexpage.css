@@ -1,9 +1,7 @@
-/* recipeindexpage.css */
-
 .recipe-index-wrapper {
-  background-color: white; /* ✅ Set background to white */
+  background-color: white;
   min-height: 100vh;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: inherit;
 }
 
 .recipe-index-content {
@@ -13,47 +11,121 @@
 }
 
 .recipe-index-header {
-  font-size: 2rem;
-  font-weight: bold;
+  font-size: 16px;
+  font-weight: 600;
   margin-bottom: 1.5rem;
 }
 
 .recipe-index-controls {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 1.5rem;
   flex-wrap: wrap;
+  gap: 1rem;
+}
+
+/* 🔍 SEARCH BAR */
+.search-row {
+  display: flex;
+  align-items: center;
+  position: relative;
 }
 
 .recipe-search-input {
   padding: 0.5rem 1rem;
   font-size: 1rem;
   border: 1px solid #ccc;
-  border-radius: 8px;
+  border-radius: 12px;
   width: 300px;
   max-width: 100%;
 }
 
-.recipe-sort-dropdown-wrapper {
+.search-button {
+  margin-left: 10px;
+  padding: 0.5rem 1rem;
+  background-color: green;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  height: 42px;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  font-size: 1rem;
+  justify-content: center;
 }
 
-.recipe-sort-dropdown {
-  padding: 0.5rem;
-  font-size: 1rem;
-  border-radius: 8px;
+.search-suggestions {
+  position: absolute;
+  background: white;
   border: 1px solid #ccc;
+  border-top: none;
+  max-height: 150px;
+  overflow-y: auto;
+  width: 300px;
+  z-index: 10;
+  border-radius: 0 0 12px 12px;
+  top: 100%;
+  left: 0;
 }
 
+.suggestion-item,
+.no-suggestion {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.suggestion-item:hover {
+  background-color: #f0f0f0;
+}
+
+/* 🔽 SORT AREA */
+.recipe-sort-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: inherit;
+  line-height: 1;
+}
+
+.sort-label {
+  font-size: 16px;
+  font-weight: 600;
+  margin-right: 0.25rem;
+}
+
+/* 🔽 Sort dropdown toggle (e.g. “Top Rated ▼”) */
+.dropbtn {
+  background: none;
+  border: none;
+  font-size: inherit;
+  font-weight: inherit;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+/* ✅ FIX: Unbold dropdown items ONLY in sort */
+.recipe-sort-wrapper .dropdown-content {
+  font-weight: normal;
+}
+
+.recipe-sort-wrapper .dropdown-content button {
+  font-size: 16px;
+  font-weight: normal;
+  font-family: inherit;
+  padding: 8px 12px;
+  cursor: pointer;
+  text-align: left;
+}
+
+/* 📦 RECIPE GRID */
 .recipe-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* ✅ Exactly 3 cards per row */
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
 }
-
-
-

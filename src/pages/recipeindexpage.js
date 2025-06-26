@@ -1,4 +1,3 @@
-// src/pages/RecipeIndexPage.js
 import React, { useEffect, useState } from 'react';
 import { getDocs, collection } from 'firebase/firestore';
 import { db } from '../firebase';
@@ -9,7 +8,9 @@ import './recipeindexpage.css';
 function RecipeIndexPage() {
   const [allRecipes, setAllRecipes] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
   const [sortBy, setSortBy] = useState('Top Rated');
+  const [dropdownVisible, setDropdownVisible] = useState(false);
 
   useEffect(() => {
     const fetchRecipes = async () => {
@@ -20,9 +21,24 @@ function RecipeIndexPage() {
     fetchRecipes();
   }, []);
 
+  const handleSearchChange = (e) => {
+    const value = e.target.value.toLowerCase().trim();
+    setSearchTerm(e.target.value);
+
+    const matched = allRecipes.filter(recipe =>
+      (recipe.name || '').toLowerCase().includes(value)
+    );
+    setSuggestions(value ? matched.slice(0, 5) : []);
+  };
+
+  const handleSortChange = (value) => {
+    setSortBy(value);
+    setDropdownVisible(false);
+  };
+
   const filteredRecipes = allRecipes
     .filter(recipe =>
-      (recipe.name || '').toLowerCase().includes(searchTerm.toLowerCase())
+      (recipe.name || '').toLowerCase().includes(searchTerm.toLowerCase().trim())
     )
     .sort((a, b) => {
       if (sortBy === 'Top Rated') return (b.rating || 0) - (a.rating || 0);
@@ -35,28 +51,48 @@ function RecipeIndexPage() {
     <div className="recipe-index-wrapper">
       <Navbar />
       <div className="recipe-index-content">
-        <div className="recipe-index-header">Recipe Index</div>
+        <h2 className="recipe-index-header">Recipe Index</h2>
 
         <div className="recipe-index-controls">
-          <input
-            type="text"
-            placeholder="Search recipes..."
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            className="recipe-search-input"
-          />
-          <div className="recipe-sort-dropdown-wrapper">
-            <label htmlFor="sort">Sort by:</label>
-            <select
-              id="sort"
-              value={sortBy}
-              onChange={e => setSortBy(e.target.value)}
-              className="recipe-sort-dropdown"
+          <div className="search-row">
+            <input
+              type="text"
+              placeholder="Search recipes..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+              className="recipe-search-input"
+            />
+            <button className="search-button">🔍</button>
+            {searchTerm && (
+              <div className="search-suggestions">
+                {suggestions.length > 0 ? (
+                  suggestions.map(recipe => (
+                    <div key={recipe.id} className="suggestion-item">
+                      {recipe.name}
+                    </div>
+                  ))
+                ) : (
+                  <div className="no-suggestion">No recipes found</div>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="recipe-sort-wrapper">
+            <span className="sort-label">Sort by:</span>
+            <button
+              className="dropbtn"
+              onClick={() => setDropdownVisible(!dropdownVisible)}
             >
-              <option value="Top Rated">Top Rated</option>
-              <option value="Shortest Time">Shortest Time</option>
-              <option value="A to Z">A to Z</option>
-            </select>
+              {sortBy} ▼
+            </button>
+            {dropdownVisible && (
+              <div className="dropdown-content">
+                <button onClick={() => handleSortChange('Top Rated')}>Top Rated</button>
+                <button onClick={() => handleSortChange('Shortest Time')}>Shortest Time</button>
+                <button onClick={() => handleSortChange('A to Z')}>A to Z</button>
+              </div>
+            )}
           </div>
         </div>
 
