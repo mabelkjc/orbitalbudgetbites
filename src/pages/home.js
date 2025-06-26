@@ -27,7 +27,9 @@ function HomePage() {
   const [userPreferences, setUserPreferences] = useState([]);
   const [recipes, setRecipes] = useState([]);
   const [filteredRecipes, setFilteredRecipes] = useState(initialState.filteredRecipes || []);
-  const [hasSearched, setHasSearched] = useState(!!initialState.filteredRecipes);
+  const [hasSearched, setHasSearched] = useState(initialState.hasSearched || false);
+  const [hasSearchedManually, setHasSearchedManually] = useState(initialState.hasSearchedManually || false);
+  const [message, setMessage] = useState(initialState.message || '');
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -51,6 +53,7 @@ function HomePage() {
       const all = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setRecipes(all);
 
+      // Fallback if there's no filtered data stored
       if (!initialState.filteredRecipes) {
         setFilteredRecipes(all);
       }
@@ -81,25 +84,55 @@ function HomePage() {
       const ingredientMatch = selectedLower.length === 0 || tags.some(tag => selectedLower.includes(tag));
       const dietMatch = preferencesLower.length === 0 || preferencesLower.every(p => dietTags.includes(p));
       const allergySafe = !allergyTags.some(tag => allergiesLower.includes(tag));
-      const restrictionSafe = !restrictionTags.some(tag => restrictionsLower.includes(tag));
+      const restrictionSafe = restrictionsLower.length === 0 || restrictionsLower.every(r => restrictionTags.includes(r));
 
       return ingredientMatch && allergySafe && restrictionSafe && dietMatch;
     });
 
+    // Build search message
+    let newMessage = '';
+    if (matched.length > 0) {
+      if (selectedLower.length > 0) {
+        newMessage = (preferencesLower.length || allergiesLower.length || restrictionsLower.length)
+          ? `We found ${matched.length} recipe(s) matching your ingredients and profile.`
+          : `We found ${matched.length} recipe(s) based on your ingredients.`;
+      } else {
+        newMessage = `We found ${matched.length} recipe(s) based on your profile.`;
+      }
+    } else {
+      newMessage = `No recipes match your filters.`;
+    }
+
+    // Set states
     setFilteredRecipes(matched);
     setHasSearched(hasAnyFilters);
+    setHasSearchedManually(true);
+    setMessage(newMessage);
 
-    sessionStorage.setItem(
-      'searchState',
-      JSON.stringify({ selectedIngredients, filteredRecipes: matched })
-    );
+    // Save to sessionStorage
+    sessionStorage.setItem('searchState', JSON.stringify({
+      selectedIngredients,
+      filteredRecipes: matched,
+      hasSearched: hasAnyFilters,
+      hasSearchedManually: true,
+      message: newMessage
+    }));
   };
 
   const handleClearAll = () => {
     setSelectedIngredients([]);
     setFilteredRecipes(recipes);
     setHasSearched(false);
-    sessionStorage.removeItem('searchState');
+    setHasSearchedManually(false);
+    setMessage('');
+
+    sessionStorage.setItem('searchState', JSON.stringify({
+      selectedIngredients: [],
+      filteredRecipes: recipes,
+      hasSearched: false,
+      hasSearchedManually: false,
+      message: ''
+    }));
   };
 
   return (
@@ -111,17 +144,23 @@ function HomePage() {
           <div className="sidebar-scroll">
             <h3>Dietary Preference:</h3>
             <div className="pill-grid">
-              {userPreferences.length ? userPreferences.map(p => <span key={p} className="pill">{p}</span>) : <span className="pill">None</span>}
+              {userPreferences.length
+                ? userPreferences.map(p => <span key={p} className="pill">{p}</span>)
+                : <span className="pill">None</span>}
             </div>
 
             <h3>Allergies:</h3>
             <div className="pill-grid">
-              {userAllergies.length ? userAllergies.map(a => <span key={a} className="pill">{a}</span>) : <span className="pill">None</span>}
+              {userAllergies.length
+                ? userAllergies.map(a => <span key={a} className="pill">{a}</span>)
+                : <span className="pill">None</span>}
             </div>
 
             <h3>Restrictions:</h3>
             <div className="pill-grid">
-              {userRestrictions.length ? userRestrictions.map(r => <span key={r} className="pill">{r}</span>) : <span className="pill">None</span>}
+              {userRestrictions.length
+                ? userRestrictions.map(r => <span key={r} className="pill">{r}</span>)
+                : <span className="pill">None</span>}
             </div>
 
             <h3>Select your ingredients:</h3>
@@ -150,12 +189,8 @@ function HomePage() {
         <div className="recipe-scroll-area">
           <div className="recipe-section">
             <div className="recipe-list">
-              {hasSearched && (
-                <div className="centered-search-message">
-                  {filteredRecipes.length > 0
-                    ? `We found ${filteredRecipes.length} recipe(s) for you.`
-                    : 'No recipes match your filters.'}
-                </div>
+              {hasSearched && hasSearchedManually && (
+                <div className="centered-search-message">{message}</div>
               )}
               {filteredRecipes.map(recipe => (
                 <RecipeCard
@@ -174,3 +209,5 @@ function HomePage() {
 }
 
 export default HomePage;
+
+

@@ -20,6 +20,8 @@ function RecipeDetail() {
   const [user] = useAuthState(auth);
 
   const selectedIngredients = location.state?.selectedIngredients || [];
+  const filteredRecipes = location.state?.filteredRecipes || [];
+  const backPath = location.state?.from || '/home';
 
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -78,10 +80,7 @@ function RecipeDetail() {
     alert("Review submitted!");
     setNewComment('');
     setNewRating(5);
-
-    const reviewsRef = collection(db, 'Recipes', id, 'reviews');
-    const reviewsQuery = query(reviewsRef, orderBy("timestamp", "desc"));
-    const updatedReviews = await getDocs(reviewsQuery);
+    const updatedReviews = await getDocs(query(collection(db, 'Recipes', id, 'reviews'), orderBy("timestamp", "desc")));
     const reviewPromises = updatedReviews.docs.map(async (reviewDoc) => {
       const data = reviewDoc.data();
       let username = 'Anonymous';
@@ -102,8 +101,7 @@ function RecipeDetail() {
         timestamp: data.timestamp?.toDate?.() || null
       };
     });
-    const resolvedReviews = await Promise.all(reviewPromises);
-    setReviews(resolvedReviews);
+    setReviews(await Promise.all(reviewPromises));
   };
 
   const averageRating = reviews.length > 0
@@ -140,11 +138,8 @@ function RecipeDetail() {
       <div style={{ paddingLeft: '4vw', marginTop: '1rem' }}>
         <button
           onClick={() =>
-            navigate('/', {
-              state: {
-                selectedIngredients: location.state?.selectedIngredients || [],
-                filteredRecipes: location.state?.filteredRecipes || [],
-              }
+            navigate(backPath, {
+              state: { selectedIngredients, filteredRecipes }
             })
           }
           style={{
@@ -170,7 +165,6 @@ function RecipeDetail() {
 
         <div className="right-panel">
           <h1 className="recipe-name">{recipe.id}</h1>
-
           <div className="time-rating">
             <span className="time">⏱ {recipe.time ? `${recipe.time} mins` : '25 mins'}</span>
             <span className="stars">{renderStars(averageRating)}</span>
@@ -185,11 +179,9 @@ function RecipeDetail() {
           <div className="missing">
             <h4>You are missing...</h4>
             <ul>
-              {missingIngredients.length > 0 ? (
-                missingIngredients.map((item, i) => <li key={i}>{item}</li>)
-              ) : (
-                <li>You're not missing anything!</li>
-              )}
+              {missingIngredients.length > 0
+                ? missingIngredients.map((item, i) => <li key={i}>{item}</li>)
+                : <li>You're not missing anything!</li>}
             </ul>
             <button className="store-btn">Find Stores Near Me</button>
           </div>
@@ -263,4 +255,5 @@ function RecipeDetail() {
 }
 
 export default RecipeDetail;
+
 

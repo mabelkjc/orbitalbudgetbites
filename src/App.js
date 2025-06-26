@@ -12,11 +12,11 @@ function App() {
     <Router>
       <div className="container mt-4">
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<Login />} />               {/* ✅ Show login here */}
           <Route path="/login" element={<Login />} />
           <Route path="/registration" element={<Registration />} />
           <Route path="/profile" element={<Main />} />
-          <Route path="/home" element={<HomePage />} />
+          <Route path="/home" element={<HomePage />} />        {/* ✅ Home stays here */}
           <Route path="/recipe/:id" element={<RecipeDetail />} />
           <Route path="/recipeindex" element={<RecipeIndexPage />} />
         </Routes>
@@ -26,6 +26,7 @@ function App() {
 }
 
 export default App;
+
 
 
 

@@ -10,8 +10,13 @@ function Navbar() {
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const handleLogout = async () => {
-    await signOut(auth);
-    navigate('/login');
+    try {
+      await signOut(auth);
+      sessionStorage.removeItem('searchState'); // ✅ Clear homepage filters on logout
+      navigate('/login');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
   };
 
   return (
