@@ -36,7 +36,7 @@ function HomePage() {
       const ref = collection(db, 'users');
       const snapshot = await getDocs(ref);
       snapshot.forEach((docSnap) => {
-        if (docSnap.id === auth.currentUser.uid) {
+        if (auth.currentUser && docSnap.id === auth.currentUser.uid) {
           const data = docSnap.data();
           setUserAllergies(data.allergies || []);
           setUserRestrictions(data.restrictions || []);
