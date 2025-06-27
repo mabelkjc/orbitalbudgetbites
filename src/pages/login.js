@@ -16,7 +16,6 @@ function LoginPage() {
       const userCred = await signInWithEmailAndPassword(auth, email, password);
       const user = userCred.user;
 
-      // Fetch user preferences
       const ref = doc(db, 'users', user.uid);
       const docSnap = await getDoc(ref);
 
@@ -30,10 +29,10 @@ function LoginPage() {
         if (hasPreferences) {
           navigate('/home');
         } else {
-          navigate('/profile'); // New user with no prefs
+          navigate('/profile');
         }
       } else {
-        navigate('/profile'); // Fallback: user exists but doc missing
+        navigate('/profile');
       }
     } catch (error) {
       alert("Login failed: " + error.message);

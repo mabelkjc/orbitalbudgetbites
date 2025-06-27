@@ -86,16 +86,23 @@ body {
   background-color: #fff2cc;
   border-radius: 12px;
   padding: 0.5rem 1.5rem 1rem 1.5rem;
-  height: 245px;
+  height: 182px;
   overflow-y: auto;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   margin-top: 1.5rem;
+  position: relative;
+  /* Prevent scrollbar from sticking out */
+  box-sizing: content-box;
+  scrollbar-gutter: stable both-edges;
 }
+
 
 .missing strong {
   font-weight: bold;
+  margin-bottom: 0.4rem;
 }
 
 .missing ul {
@@ -111,14 +118,13 @@ body {
   white-space: nowrap;
 }
 
-/* Find stores button */
 .store-btn {
   background-color: #2e7d32;
   color: white;
-  padding: 0.8rem 1.2rem;
+  padding: 0.6rem 1.2rem;
   font-size: 0.9rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
   width: 100%;
   margin-top: auto;
@@ -267,5 +273,41 @@ h3 {
 .justified-steps p {
   text-align: justify;
   margin-bottom: 0.5rem;
+}
+
+.missing::-webkit-scrollbar {
+  width: 9.5px;
+}
+
+.missing::-webkit-scrollbar-track {
+  background: transparent;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.missing::-webkit-scrollbar-thumb {
+  background-color: #c4c4c4;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.detail-container {
+  display: flex;
+  align-items: stretch;
+}
+
+.left-panel {
+  flex: 1;
+}
+
+.right-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.missing {
+  margin-top: auto;
 }
 

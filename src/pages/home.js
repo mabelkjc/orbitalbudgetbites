@@ -53,7 +53,6 @@ function HomePage() {
       const all = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setRecipes(all);
 
-      // Fallback if there's no filtered data stored
       if (!initialState.filteredRecipes) {
         setFilteredRecipes(all);
       }
@@ -89,7 +88,6 @@ function HomePage() {
       return ingredientMatch && allergySafe && restrictionSafe && dietMatch;
     });
 
-    // Build search message
     let newMessage = '';
     if (matched.length > 0) {
       if (selectedLower.length > 0) {
@@ -103,13 +101,11 @@ function HomePage() {
       newMessage = `No recipes match your filters.`;
     }
 
-    // Set states
     setFilteredRecipes(matched);
     setHasSearched(hasAnyFilters);
     setHasSearchedManually(true);
     setMessage(newMessage);
 
-    // Save to sessionStorage
     sessionStorage.setItem('searchState', JSON.stringify({
       selectedIngredients,
       filteredRecipes: matched,

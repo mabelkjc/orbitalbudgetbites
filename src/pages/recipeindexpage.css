@@ -7,53 +7,69 @@
 .recipe-index-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: 1rem 1.5rem;
 }
 
-.recipe-index-header {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
-}
-
-.recipe-index-controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-/* 🔍 SEARCH BAR */
-.search-row {
-  display: flex;
+/* NEW: Replace previous .recipe-index-controls with this */
+.recipe-index-controls-manual {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   align-items: center;
+  margin-bottom: 1.5rem;
+  padding-top: 0.5rem;
   position: relative;
 }
 
+/* Left: "Recipe Index" */
+.recipe-index-header {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0;
+  padding-left: 26px;
+  line-height: 1;
+  top: 30px;
+  position: relative;
+}
+
+/* Center: Search */
+.search-container {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
+  z-index: 1;
+  justify-self: center;
+}
+
 .recipe-search-input {
-  padding: 0.5rem 1rem;
+  width: 100%;
+  padding: 0.5rem 2.5rem 0.5rem 1rem;
   font-size: 1rem;
   border: 1px solid #ccc;
   border-radius: 12px;
-  width: 300px;
-  max-width: 100%;
+  box-sizing: border-box;
 }
 
-.search-button {
-  margin-left: 10px;
-  padding: 0.5rem 1rem;
-  background-color: green;
-  color: white;
-  font-size: 1rem;
-  border: none;
-  border-radius: 12px;
+.clear-icon,
+.search-icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   cursor: pointer;
-  height: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-size: 1rem;
+}
+
+.clear-icon {
+  right: 2.2rem;
+  font-size: 1.65rem;
+  top: 19.3px;
+}
+
+.search-icon {
+  right: 0.7rem;
+  font-size: 1.23rem;
+  top: 17.6px;
+  cursor: pointer;
 }
 
 .search-suggestions {
@@ -63,33 +79,41 @@
   border-top: none;
   max-height: 150px;
   overflow-y: auto;
-  width: 300px;
+  width: 100%;
   z-index: 10;
   border-radius: 0 0 12px 12px;
   top: 100%;
   left: 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
 }
 
 .suggestion-item,
 .no-suggestion {
   padding: 10px;
   cursor: pointer;
+  background-color: white;
+  border-bottom: 1px solid #eee;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
 }
 
 .suggestion-item:hover {
   background-color: #f0f0f0;
+  border-radius: 0;
 }
 
-/* 🔽 SORT AREA */
+/* Right: Sort dropdown */
 .recipe-sort-wrapper {
-  position: relative;
+  grid-column: 3;
   display: flex;
-  align-items: center;
-  gap: 0.25rem;
-  font-size: 16px;
-  font-weight: 600;
-  font-family: inherit;
-  line-height: 1;
+  justify-content: flex-end;
+  padding-right: 20px;
+  position: relative;
+  top: -30px;
+  left: -4px;
 }
 
 .sort-label {
@@ -98,34 +122,60 @@
   margin-right: 0.25rem;
 }
 
-/* 🔽 Sort dropdown toggle (e.g. “Top Rated ▼”) */
 .dropbtn {
   background: none;
   border: none;
-  font-size: inherit;
-  font-weight: inherit;
-  cursor: pointer;
   padding: 0;
-  line-height: 1;
-}
-
-/* ✅ FIX: Unbold dropdown items ONLY in sort */
-.recipe-sort-wrapper .dropdown-content {
-  font-weight: normal;
-}
-
-.recipe-sort-wrapper .dropdown-content button {
   font-size: 16px;
+  font-weight: 600;
+  font-style: normal;
+  letter-spacing: normal;
+  line-height: 1;
+  appearance: none;
+  cursor: pointer;
+}
+
+.dropdown-content {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  z-index: 99;
+  padding: 0.25rem 0;
+  width: 120px;
   font-weight: normal;
-  font-family: inherit;
+}
+
+.dropdown-content a,
+.dropdown-content button {
+  all: unset;
   padding: 8px 12px;
   cursor: pointer;
   text-align: left;
+  font-size: 14px;
+  font-weight: normal;
 }
 
-/* 📦 RECIPE GRID */
+.dropdown-content a:hover,
+.dropdown-content button:hover {
+  background-color: #eee;
+}
+
+
+/* Recipe grid */
 .recipe-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
 }
+
+.no-recipes-message {
+  font-size: 1rem;
+  color: #555;
+  margin-top: 1rem;
+}
+
