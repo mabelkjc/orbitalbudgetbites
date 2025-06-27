@@ -34,7 +34,9 @@ function Navbar() {
         <button className="dropbtn" onClick={() => setDropdownVisible(!dropdownVisible)}>▼</button>
         {dropdownVisible && (
           <div className="dropdown-content">
-            <Link to="/profile">Profile</Link>
+            <Link to="/profile" state={{ from: window.location.pathname === "/recipeindex" ? "recipeindex" : "home" }}>
+              Profile
+            </Link>
             <button onClick={handleLogout}>Logout</button>
           </div>
         )}

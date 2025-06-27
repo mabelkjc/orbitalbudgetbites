@@ -3,6 +3,7 @@ import { auth, db } from '../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import './main.css';
+import { useLocation } from 'react-router-dom';
 
 const dietaryOptions = [
   'Vegetarian',
@@ -38,6 +39,8 @@ function MainPage() {
   const [loading, setLoading] = useState(true);
   const user = auth.currentUser;
   const navigate = useNavigate();
+  const location = useLocation();
+  const fromPage = location.state?.from || "home";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -77,7 +80,7 @@ function MainPage() {
       }, { merge: true });
 
       alert('Preferences saved!');
-      navigate('/home');
+      navigate(`/${fromPage}`);
     }
   };
 
