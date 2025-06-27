@@ -5,29 +5,30 @@ import { useNavigate } from 'react-router-dom';
 import './main.css';
 
 const dietaryOptions = [
-  'Vegetarian',    // No meat, may include eggs/dairy
-  'Vegan',         // No animal products at all
-  'Keto',          // High-fat, very low-carb
-  'Halal',         // Permitted under Islamic law
-  'Pescatarian',   // Vegetarian + seafood
-  'Low-carb',      // General low-carb (less strict than Keto)
+  'Vegetarian',
+  'Vegan',
+  'Keto',
+  'Halal',
+  'Pescatarian',
+  'Low-carb',
 ];
 const allergyOptions = [
-  'Dairy',       // Milk, cheese, butter, cream
-  'Nuts',        // Almonds, cashews, walnuts, etc.
-  'Shellfish',   // Shrimp, crab, lobster
-  'Eggs',        // Optional — many are egg-allergic
-  'Soy',         // Soy milk, tofu, soy sauce
-  'Gluten',      // For wheat allergy or celiac (keep separate from restriction)
+  'Dairy',
+  'Nuts',
+  'Shellfish',
+  'Eggs',
+  'Soy',
+  'Gluten',
 ];
 const restrictionOptions = [
-  'Gluten-free',  // For celiac or gluten intolerance (not an allergy)
-  'Pork',         // For religious reasons (e.g. halal, kosher)
-  'Red meat',     // Beef, lamb
-  'Alcohol',      // No wine, sake, etc. used in cooking
-  'Egg-free',     // For dietary or ethical reasons (not necessarily allergy)
-  'Low sugar',
+  'Gluten-free',
+  'Pork-free',
+  'Red-meat-free',
+  'Alcohol-free',
+  'Egg-free',
+  'Low-sugar'
 ];
+
 
 function MainPage() {
   const [username, setUsername] = useState('');

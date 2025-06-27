@@ -1,4 +1,3 @@
-// src/components/Navbar.js
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { auth } from '../firebase';
@@ -12,7 +11,7 @@ function Navbar() {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      sessionStorage.removeItem('searchState'); // ✅ Clear homepage filters on logout
+      sessionStorage.removeItem('searchState');
       navigate('/login');
     } catch (error) {
       console.error('Logout failed:', error);
@@ -23,7 +22,7 @@ function Navbar() {
     <div className="top-bar">
       <nav className="nav-links">
         <Link to="/community">Community</Link>
-        <Link to="/recipeindex">Recipe Index</Link> {/* ✅ Fixed this line */}
+        <Link to="/recipeindex">Recipe Index</Link>
       </nav>
       <div className="logo">
         <img src="/budgetbitesfinal.png" alt="Budget Bites Logo" />
