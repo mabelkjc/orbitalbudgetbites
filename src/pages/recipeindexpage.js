@@ -79,7 +79,7 @@ function RecipeIndexPage() {
       (recipe.name || '').toLowerCase().includes(value)
     );
     setFilteredRecipes(filtered);
-    setSuggestions([]); // ✅ Hide suggestion box when manually searching
+    setSuggestions([]);
     localStorage.setItem('searchTerm', searchTerm);
   };
 

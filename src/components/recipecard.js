@@ -4,7 +4,7 @@ import { doc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 import './recipecard.css';
 
-const RecipeCard = ({ recipe, selectedIngredients, filteredRecipes }) => {
+const RecipeCard = ({ recipe, selectedIngredients, filteredRecipes, fromIndexPage }) => {
   const [avgRating, setAvgRating] = useState(null);
   const navigate = useNavigate();
   const imageName = (recipe.id || '').toLowerCase().replace(/\s+/g, '') + '.jpg';
@@ -40,7 +40,7 @@ const RecipeCard = ({ recipe, selectedIngredients, filteredRecipes }) => {
       state: {
         selectedIngredients,
         filteredRecipes,
-        fromIndexPage: true,
+        from: fromIndexPage ? '/recipeindex' : '/home',
       },
     });
   };

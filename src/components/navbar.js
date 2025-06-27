@@ -12,6 +12,8 @@ function Navbar() {
     try {
       await signOut(auth);
       sessionStorage.removeItem('searchState');
+      localStorage.removeItem('searchTerm');
+      localStorage.removeItem('sortBy');
       navigate('/login');
     } catch (error) {
       console.error('Logout failed:', error);
@@ -24,9 +26,9 @@ function Navbar() {
         <Link to="/community">Community</Link>
         <Link to="/recipeindex">Recipe Index</Link>
       </nav>
-      <div className="logo">
+      <Link to="/home" className="logo">
         <img src="/budgetbitesfinal.png" alt="Budget Bites Logo" />
-      </div>
+      </Link>
       <div className="profile-menu">
         <span className="user-icon" />
         <button className="dropbtn" onClick={() => setDropdownVisible(!dropdownVisible)}>▼</button>

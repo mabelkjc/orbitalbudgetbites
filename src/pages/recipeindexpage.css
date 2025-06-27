@@ -10,7 +10,6 @@
   padding: 1rem 1.5rem;
 }
 
-/* NEW: Replace previous .recipe-index-controls with this */
 .recipe-index-controls-manual {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -20,22 +19,20 @@
   position: relative;
 }
 
-/* Left: "Recipe Index" */
 .recipe-index-header {
   font-size: 1.8rem;
   font-weight: 600;
   margin: 0;
   padding-left: 26px;
   line-height: 1;
-  top: 30px;
+  top: 30.5px;
   position: relative;
 }
 
-/* Center: Search */
 .search-container {
   position: relative;
   width: 100%;
-  max-width: 300px;
+  max-width: 400px;
   margin: 0 auto;
   z-index: 1;
   justify-self: center;
@@ -68,7 +65,7 @@
 .search-icon {
   right: 0.7rem;
   font-size: 1.23rem;
-  top: 17.6px;
+  top: 18px;
   cursor: pointer;
 }
 
@@ -94,6 +91,7 @@
   cursor: pointer;
   background-color: white;
   border-bottom: 1px solid #eee;
+  font-size: 16px;
 }
 
 .suggestion-item:last-child {
@@ -105,7 +103,6 @@
   border-radius: 0;
 }
 
-/* Right: Sort dropdown */
 .recipe-sort-wrapper {
   grid-column: 3;
   display: flex;
@@ -114,6 +111,7 @@
   position: relative;
   top: -30px;
   left: -4px;
+  align-items: baseline;
 }
 
 .sort-label {
@@ -165,8 +163,6 @@
   background-color: #eee;
 }
 
-
-/* Recipe grid */
 .recipe-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -177,5 +173,7 @@
   font-size: 1rem;
   color: #555;
   margin-top: 1rem;
+  text-align: center;
+  grid-column: 2;
 }
 
