@@ -11,11 +11,36 @@ function HomePage() {
   const location = useLocation();
 
   const availableIngredients = {
-    "Grains & Starches": ['Rice', 'Quinoa', 'Oats', 'Pasta', 'Flour'],
-    "Proteins (Non-Seafood)": ['Chicken', 'Eggs', 'Tofu', 'Beef', 'Pork', 'Lamb'],
-    Seafood: ['Shrimp', 'Mussels', 'Salmon', 'Crab', 'Tuna'],
-    "Fruits & Vegetables": ['Banana', 'Mango', 'Spinach', 'Onion', 'Broccoli', 'Apple'],
-    Dairy: ['Milk', 'Cheese', 'Yogurt', 'Butter', 'Cream']
+    "Grains & Starches": [
+      'Rice', 'Quinoa', 'Pasta', 'Oat'
+    ],
+    "Proteins (Non-Seafood)": [
+      'Chicken', 'Egg', 'Tofu', 'Beef', 'Pork', 'Lamb'
+    ],
+    "Seafood": [
+      'Shrimp', 'Mussel', 'Salmon', 'Crab', 'Tuna'
+    ],
+    "Fruits & Vegetables": [
+      'Banana', 'Mango', 'Spinach', 'Onion', 'Green Onion', 'Broccoli', 'Carrot',
+      'Capsicum', 'Coriander', 'Cauliflower', 'Tomato', 'Lime', 'Garlic',
+      'Ginger', 'Mushroom', 'Pea', 'Shallot',
+    ],
+    "Dairy": [
+      'Milk', 'Cheese', 'Yogurt', 'Butter', 'Heavy Cream'
+    ],
+    "Oils & Fats": [
+      'Olive Oil', 'Oil'
+    ],
+    "Seasonings & Condiments": [
+      'Soy Sauce', 'Garlic Powder', 'Cajun Seasoning',
+      'Sesame Seed', 'Sake', 'Mirin', 'Soup Stock', 'Chicken Stock', 'Ketchup', 'Chilli Sauce'
+    ],
+    "Nuts & Seeds": [
+      'Almond'
+    ],
+    "Pantry & Baking": [
+      'Flour', 'Baking Powder'
+    ]
   };
 
   const storedState = sessionStorage.getItem('searchState');

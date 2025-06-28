@@ -1,4 +1,3 @@
-/* Fullscreen layout and background */
 body {
   margin: 0;
   padding: 0;
@@ -18,7 +17,6 @@ body {
   padding: 2rem 4vw;
   box-sizing: border-box;
   height: auto;
-  /* Removed border */
 }
 
 .left-panel {
@@ -44,7 +42,6 @@ body {
   justify-content: flex-start;
 }
 
-/* Time and rating */
 .time-rating {
   display: flex;
   align-items: center;
@@ -70,7 +67,6 @@ body {
   margin-top: 0.2rem;
 }
 
-/* Pills */
 .pill {
   display: inline-block;
   background-color: #f4f4f4;
@@ -92,13 +88,11 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin-top: 1.5rem;
+  margin-top: auto;
   position: relative;
-  /* Prevent scrollbar from sticking out */
   box-sizing: content-box;
   scrollbar-gutter: stable both-edges;
 }
-
 
 .missing strong {
   font-weight: bold;
@@ -106,7 +100,7 @@ body {
 }
 
 .missing ul {
-  columns: 4;
+  columns: 3;
   column-gap: 2rem;
   list-style-type: disc;
   padding-left: 1.2rem;
@@ -136,14 +130,12 @@ body {
   background-color: #2e7d32;
 }
 
-/* Section wrapper with aligned padding */
 .section-wrapper {
   padding: 2rem 4vw;
   box-sizing: border-box;
   width: 100%;
 }
 
-/* Ingredients section */
 .ingredient-list,
 .instructions ol {
   list-style-position: outside;
@@ -158,18 +150,16 @@ h3 {
   margin-top: 2rem;
 }
 
-/* Instructions */
 .instructions {
   margin-top: 0.5rem;
   width: 100%;
 }
 
-/* Reviews */
 .review-section {
   margin-top: 0.5rem;
   width: 100%;
   padding-top: 2rem;
-  border-top: none; /* Removed grey line */
+  border-top: none;
 }
 
 .review-section h3 {
@@ -212,7 +202,6 @@ h3 {
   background-color: #388e3c;
 }
 
-/* Review list */
 .review-list {
   max-height: 300px;
   overflow-y: auto;
@@ -245,7 +234,6 @@ h3 {
   overflow: hidden;
 }
 
-/* Recipe name */
 .recipe-name {
   font-size: 1.8rem;
   font-weight: bold;

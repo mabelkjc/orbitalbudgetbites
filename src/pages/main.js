@@ -15,9 +15,9 @@ const dietaryOptions = [
 ];
 const allergyOptions = [
   'Dairy',
-  'Nuts',
+  'Nut',
   'Shellfish',
-  'Eggs',
+  'Egg',
   'Soy',
   'Gluten',
 ];
