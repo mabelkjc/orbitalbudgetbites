@@ -29,10 +29,10 @@ function LoginPage() {
         if (hasPreferences) {
           navigate('/home');
         } else {
-          navigate('/profile');
+          navigate('/preferences');
         }
       } else {
-        navigate('/profile');
+        navigate('/preferences', { state: { from: 'home' } });
       }
     } catch (error) {
       alert("Login failed: " + error.message);
