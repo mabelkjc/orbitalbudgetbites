@@ -4,6 +4,8 @@
 
 .profile-container {
   padding: 2rem 4vw;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .profile-header {
@@ -12,11 +14,91 @@
   align-items: flex-start;
 }
 
+.profile-picture-wrapper {
+  width: 180px;
+  min-height: 180px;
+  text-align: center;
+}
+
 .profile-picture {
   width: 120px;
   height: 120px;
   border-radius: 100%;
   object-fit: cover;
+  display: block;
+  margin: 0 auto;
+}
+
+.edit-pic {
+  margin-top: 0.5rem;
+}
+
+.edit-pic-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.avatar-align-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-left: 0rem;
+}
+
+.edit-label {
+  font-size: 0.75rem;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-bottom: 0.4rem;
+  display: inline-block;
+  margin-left: 0.7rem;
+  text-align: left;
+  color: #16612C;
+}
+
+.avatar-selection {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  max-height: 110px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-sizing: border-box;
+  justify-items: center;
+}
+
+.avatar-selection::-webkit-scrollbar {
+  width: 9.5px;
+}
+.avatar-selection::-webkit-scrollbar-track {
+  background: transparent;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+.avatar-selection::-webkit-scrollbar-thumb {
+  background-color: #c4c4c4;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.avatar-option {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border 0.2s ease;
+}
+
+.avatar-option.selected {
+  border-color: #16612C;
 }
 
 .profile-info h2 {
@@ -37,39 +119,6 @@
   font-size: 0.9rem;
 }
 
-.edit-pic {
-  margin-top: 0.5rem;
-  text-align: center;
-}
-
-.edit-label {
-  font-size: 0.75rem;
-  color: #007bff;
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-.avatar-selection {
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-
-.avatar-option {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
-  cursor: pointer;
-  border: 2px solid transparent;
-  transition: border 0.2s ease;
-}
-
-.avatar-option.selected {
-  border-color: #16612C;
-}
-
 .editpref-button {
   background-color: #16612C;
   color: white;
@@ -78,6 +127,9 @@
   border-radius: 6px;
   cursor: pointer;
   font-weight: bold;
+  margin-top: 1rem;
+  margin-left: 0;
+  display: inline-block;
 }
 
 .editpref-button:hover {
@@ -86,6 +138,7 @@
 
 .section {
   margin-top: 3rem;
+  padding: 0;
 }
 
 .section h3 {
@@ -98,19 +151,38 @@
   color: #666;
 }
 
-.card-row {
-  display: flex;
+/* ✅ NEW: Wrapper for recipe card rows for proper alignment */
+.card-wrapper {
+  padding-left: 0.5rem;  /* Adjust this to match h3 alignment */
+  padding-right: 0.5rem;
   overflow-x: auto;
-  gap: 1rem;
-  padding-bottom: 1rem;
-  scroll-behavior: smooth;
+}
+
+
+.card-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 2rem;
+  max-height: 500px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0.5rem 1.2rem 0.5rem 0;
+  margin: 0;
+  scrollbar-gutter: stable both-edges;
 }
 
 .card-row::-webkit-scrollbar {
-  height: 8px;
+  width: 9.5px;
 }
 
+.card-row::-webkit-scrollbar-track {
+  background: transparent;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
 .card-row::-webkit-scrollbar-thumb {
-  background-color: #ccc;
-  border-radius: 4px;
+  background-color: #c4c4c4;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
 }

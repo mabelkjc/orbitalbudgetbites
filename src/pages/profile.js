@@ -18,13 +18,13 @@ function ProfilePage() {
 
     useEffect(() => {
         const fetchData = async () => {
-        if (!loadingAuth && user) {
-            const ref = doc(db, 'users', user.uid);
-            const docSnap = await getDoc(ref);
-            if (docSnap.exists()) {
-            setUserData(docSnap.data());
+            if (!loadingAuth && user) {
+                const ref = doc(db, 'users', user.uid);
+                const docSnap = await getDoc(ref);
+                if (docSnap.exists()) {
+                    setUserData(docSnap.data());
+                }
             }
-        }
         };
         fetchData();
     }, [user, loadingAuth]);
@@ -33,7 +33,7 @@ function ProfilePage() {
         const fetchSavedRecipes = async () => {
             if (!loadingAuth && user && userData?.savedRecipes?.length > 0) {
                 const recipesRef = collection(db, 'Recipes');
-                const q = query(recipesRef, where('__name__', 'in', userData.savedRecipes.slice(0, 10))); // limit to 10
+                const q = query(recipesRef, where('__name__', 'in', userData.savedRecipes.slice(0, 10)));
 
                 const querySnapshot = await getDocs(q);
                 const recipeList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -48,7 +48,7 @@ function ProfilePage() {
         const fetchRatedRecipes = async () => {
             if (!loadingAuth && user && userData?.ratedRecipes?.length > 0) {
                 const recipesRef = collection(db, 'Recipes');
-                const q = query(recipesRef, where('__name__', 'in', userData.ratedRecipes.slice(0, 10))); // Limit to 10 for safety
+                const q = query(recipesRef, where('__name__', 'in', userData.ratedRecipes.slice(0, 10)));
 
                 const querySnapshot = await getDocs(q);
                 const recipeList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -59,25 +59,19 @@ function ProfilePage() {
         fetchRatedRecipes();
     }, [user, loadingAuth, userData]);
 
-
     const handleEditPreferences = () => {
         navigate('/profile/preferences', { state: { from: 'profile' } });
     };
 
-    const handleImageUpload = async (e) => { // to fix
+    const handleImageUpload = async (e) => {
         const file = e.target.files[0];
         if (!file || !user) return;
-        console.log('file:', file); //to remove
 
         const token = await auth.currentUser.getIdToken();
-        console.log('Firebase JWT:', token); //to remove
-
         const supabaseWithAuth = createSupabaseWithAuth(token);
 
         const fileExt = file.name.split('.').pop();
         const filePath = `${user.uid}.${fileExt}`;
-        console.log('fileExt', fileExt); //to remove
-        console.log('filePath', filePath); //to remove
 
         const { error: uploadError } = await supabaseWithAuth
             .storage
@@ -111,85 +105,89 @@ function ProfilePage() {
 
     return (
         <div className="profile-wrapper">
-        <Navbar />
-        <div className="profile-container">
-            <div className="profile-header">
-            <div className="profile-picture-wrapper">
-                <img
-                    src={userData.profilePicture || '/default-profile.png'}
-                    alt="Profile"
-                    className="profile-picture"
-                />
-                <div className="edit-pic">
-                    <label className="edit-label" onClick={() => setShowAvatars(!showAvatars)}>Edit Avatar</label>
-                    {showAvatars && (
-                    <div className="avatar-selection">
-                        {['tacos.png', 'boba.png', 'onigiri.png'].map(filename => {
-                            const avatarPath = `/${filename}`;
-                            return (
-                                <img
-                                    key={filename}
-                                    src={avatarPath}
-                                    alt={filename}
-                                    className={`avatar-option ${userData.profilePicture === avatarPath ? 'selected' : ''}`}
-                                    onClick={async () => {
-                                        await setDoc(doc(db, 'users', user.uid), {
-                                            profilePicture: avatarPath
-                                        }, { merge: true });
-                                        setUserData(prev => ({ ...prev, profilePicture: avatarPath }));
-                                        setShowAvatars(false);
-                                    }}
-                                />
-                            );
-                        })}
+            <Navbar />
+            <div className="profile-container">
+                <div className="profile-header">
+                    <div className="profile-picture-wrapper">
+                        <img
+                            src={userData.profilePicture || '/default-profile.png'}
+                            alt="Profile"
+                            className="profile-picture"
+                        />
+                        <div className="edit-pic-wrapper">
+                            <label className="edit-label" onClick={() => setShowAvatars(!showAvatars)}>Edit Avatar</label>
+                            {showAvatars && (
+                                <div className="avatar-selection">
+                                    {['tacos.png', 'boba.png', 'onigiri.png', 'silly.png'].map(filename => {
+                                        const avatarPath = `/${filename}`;
+                                        return (
+                                            <img
+                                                key={filename}
+                                                src={avatarPath}
+                                                alt={filename}
+                                                className={`avatar-option ${userData.profilePicture === avatarPath ? 'selected' : ''}`}
+                                                onClick={async () => {
+                                                    await setDoc(doc(db, 'users', user.uid), {
+                                                        profilePicture: avatarPath
+                                                    }, { merge: true });
+                                                    setUserData(prev => ({ ...prev, profilePicture: avatarPath }));
+                                                    setShowAvatars(false);
+                                                }}
+                                            />
+                                        );
+                                    })}
+                                </div>
+                            )}
+                        </div>
                     </div>
-                    )}
+
+                    <div className="profile-info">
+                        <h2>{userData.username || 'User'}</h2>
+                        <div className="tags-section">
+                            <p><strong>My Dietary Preferences & Restrictions:</strong></p>
+                            <div className="tag-row">
+                                {[...(userData.dietaryPreferences || []), ...(userData.restrictions || [])].map((tag, i) => (
+                                    <span key={i} className="tag">{tag}</span>
+                                ))}
+                            </div>
+
+                            <p><strong>My Allergies:</strong></p>
+                            <div className="tag-row">
+                                {(userData.allergies || []).map((tag, i) => (
+                                    <span key={i} className="tag">{tag}</span>
+                                ))}
+                            </div>
+                        </div>
+
+                        <button className="editpref-button" onClick={handleEditPreferences}>Edit Preferences</button>
+                    </div>
+                </div>
+
+                <div className="section">
+                    <h3>Recipes</h3>
+                    <h4>Saved by Me</h4>
+                    <div className="card-wrapper">
+                        <div className="card-row">
+                            {savedRecipes.map(recipe => (
+                                <RecipeCard key={recipe.id} recipe={recipe} fromPage="/profile" />
+                            ))}
+                        </div>
+                    </div>
+                    <h4>Rated by Me</h4>
+                    <div className="card-wrapper">
+                        <div className="card-row">
+                            {ratedRecipes.map(recipe => (
+                                <RecipeCard key={recipe.id} recipe={recipe} fromPage="/profile" />
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="section">
+                    <h3>Community</h3>
+                    <p>(Liked by me, Created by me - placeholders)</p>
                 </div>
             </div>
-
-            <div className="profile-info">
-                <h2>{userData.username || 'User'}</h2>
-                <div className="tags-section">
-                <p><strong>My Dietary Preferences & Restrictions:</strong></p>
-                <div className="tag-row">
-                    {[...(userData.dietaryPreferences || []), ...(userData.restrictions || [])].map((tag, i) => (
-                    <span key={i} className="tag">{tag}</span>
-                    ))}
-                </div>
-
-                <p><strong>My Allergies:</strong></p>
-                <div className="tag-row">
-                    {(userData.allergies || []).map((tag, i) => (
-                    <span key={i} className="tag">{tag}</span>
-                    ))}
-                </div>
-                </div>
-
-                <button className="editpref-button" onClick={handleEditPreferences}>Edit Preferences</button>
-            </div>
-            </div>
-
-            <div className="section">
-                <h3>Recipes</h3>
-                <h4>Saved by Me</h4>
-                <div className="card-row">
-                    {savedRecipes.map(recipe => (
-                        <RecipeCard key={recipe.id} recipe={recipe} fromPage="/profile"/>
-                    ))}
-                </div>
-                <h4>Rated by Me</h4>
-                <div className="card-row">
-                    {ratedRecipes.map(recipe => (
-                        <RecipeCard key={recipe.id} recipe={recipe} fromPage="/profile" />
-                    ))}
-                </div>
-            </div>
-
-            <div className="section">
-                <h3>Community</h3>
-                <p>(Liked by me, Created by me - placeholders)</p>
-            </div>
-        </div>
         </div>
     );
 }
