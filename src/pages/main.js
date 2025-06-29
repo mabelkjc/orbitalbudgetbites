@@ -72,6 +72,11 @@ function MainPage() {
   };
 
   const saveChanges = async () => {
+    if (preferences.length === 0 || allergies.length === 0 || restrictions.length === 0) {
+      alert('Please select at least one option for Dietary Preferences, Allergies, and Restrictions.');
+      return;
+    }
+
     if (user) {
       await setDoc(doc(db, 'users', user.uid), {
         dietaryPreferences: preferences,
