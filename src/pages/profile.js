@@ -174,13 +174,13 @@ function ProfilePage() {
                 <h4>Saved by Me</h4>
                 <div className="card-row">
                     {savedRecipes.map(recipe => (
-                        <RecipeCard key={recipe.id} recipe={recipe} />
+                        <RecipeCard key={recipe.id} recipe={recipe} fromPage="profile"/>
                     ))}
                 </div>
                 <h4>Rated by Me</h4>
                 <div className="card-row">
                     {ratedRecipes.map(recipe => (
-                        <RecipeCard key={recipe.id} recipe={recipe} />
+                        <RecipeCard key={recipe.id} recipe={recipe} fromPage="profile" />
                     ))}
                 </div>
             </div>

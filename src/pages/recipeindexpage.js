@@ -178,6 +178,7 @@ function RecipeIndexPage() {
                 fromIndexPage={true}
                 searchTerm={searchTerm}
                 sortBy={sortBy}
+                fromPage="/recipeindex"
               />
             ))
           )}
