@@ -6,49 +6,49 @@ import { auth, db } from '../firebase';
 import './registration.css';
 
 function Registration() {
-  const [email, setEmail] = useState('');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const navigate = useNavigate();
+    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const userCred = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCred.user;
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const userCred = await createUserWithEmailAndPassword(auth, email, password);
+            const user = userCred.user;
 
-      await setDoc(doc(db, 'users', user.uid), {
-        email: email,
-        username: username,
-        dietaryPreferences: [],
-        allergies: [],
-        restrictions: []
-      });
+            await setDoc(doc(db, 'users', user.uid), {
+                email: email,
+                username: username,
+                dietaryPreferences: [],
+                allergies: [],
+                restrictions: []
+            });
 
-      alert("Registered successfully!");
-      navigate('/');
-    } catch (error) {
-      alert(error.message);
-    }
-  };
+            alert("Registered successfully!");
+            navigate('/');
+        } catch (error) {
+            alert(error.message);
+        }
+    };
 
-  return (
-    <div className="registration">
-      <form className="registration-form" onSubmit={handleSubmit}>
-        <h1>Registration</h1>
-        <label>Username</label>
-        <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
+    return (
+        <div className="registration">
+            <form className="registration-form" onSubmit={handleSubmit}>
+                <h1>Registration</h1>
+                <label>Username</label>
+                <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
 
-        <label>Email</label>
-        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                <label>Email</label>
+                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
 
-        <label>Password</label>
-        <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                <label>Password</label>
+                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
 
-        <button type="submit" className="submitInfo">Register</button>
-      </form>
-    </div>
-  );
+                <button type="submit" className="submitInfo">Register</button>
+            </form>
+        </div>
+    );
 }
 
 export default Registration;
