@@ -6,17 +6,19 @@ import Main from './pages/main.js';
 import HomePage from './pages/home';
 import RecipeDetail from './pages/recipedetailpage.js';
 import RecipeIndexPage from './pages/recipeindexpage.js';
+import ProfilePage from './pages/profile';
 
 function App() {
   return (
     <Router>
       <div className="container mt-4">
         <Routes>
-          <Route path="/" element={<Login />} />               {/* ✅ Show login here */}
+          <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
           <Route path="/registration" element={<Registration />} />
-          <Route path="/profile" element={<Main />} />
-          <Route path="/home" element={<HomePage />} />        {/* ✅ Home stays here */}
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile/preferences" element={<Main />} />
+          <Route path="/home" element={<HomePage />} />
           <Route path="/recipe/:id" element={<RecipeDetail />} />
           <Route path="/recipeindex" element={<RecipeIndexPage />} />
         </Routes>

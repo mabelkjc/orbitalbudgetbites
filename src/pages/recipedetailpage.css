@@ -3,7 +3,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: white;
-  font-family: 'Georgia', serif;
+  font-family: 'Karla', sans-serif;
 }
 
 .detail-wrapper {
@@ -111,9 +111,24 @@ body {
   white-space: nowrap;
 }
 
-/* Find stores button */
-.store-btn {
+.save-button {
+  background-color: #16612C;
+  border: none;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 10px 0;
+  transition: background-color 0.3s ease;
+}
+
+.save-button:hover {
   background-color: #2e7d32;
+}
+
+.store-btn {
+  background-color: #16612C;
   color: white;
   padding: 0.8rem 1.2rem;
   font-size: 0.9rem;
@@ -130,14 +145,12 @@ body {
   background-color: #2e7d32;
 }
 
-/* Section wrapper with aligned padding */
 .section-wrapper {
   padding: 2rem 4vw;
   box-sizing: border-box;
   width: 100%;
 }
 
-/* Ingredients section */
 .ingredient-list,
 .instructions ol {
   list-style-position: outside;
@@ -152,18 +165,16 @@ h3 {
   margin-top: 2rem;
 }
 
-/* Instructions */
 .instructions {
   margin-top: 0.5rem;
   width: 100%;
 }
 
-/* Reviews */
 .review-section {
   margin-top: 0.5rem;
   width: 100%;
   padding-top: 2rem;
-  border-top: none; /* Removed grey line */
+  border-top: none;
 }
 
 .review-section h3 {
@@ -192,7 +203,7 @@ h3 {
 
 .review-section button {
   align-self: flex-start;
-  background-color: #2e7d32;
+  background-color: #16612C;
   color: white;
   padding: 0.6rem 1.2rem;
   font-size: 0.9rem;
@@ -203,10 +214,9 @@ h3 {
 }
 
 .review-section button:hover {
-  background-color: #388e3c;
+  background-color: #2e7d32;
 }
 
-/* Review list */
 .review-list {
   max-height: 300px;
   overflow-y: auto;
@@ -239,7 +249,6 @@ h3 {
   overflow: hidden;
 }
 
-/* Recipe name */
 .recipe-name {
   font-size: 1.8rem;
   font-weight: bold;
