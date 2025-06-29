@@ -47,10 +47,11 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background-color: #d8d8d8;
+  background-color: #ffffff;
   object-fit: cover;
-  border: 2px solid #ccc;
+  border: 2px solid #ffffff;
   margin-right: 8px;
+  border: none;
 }
 
 .dropbtn {
