@@ -63,7 +63,7 @@ function ProfilePage() {
         navigate('/profile/preferences', { state: { from: 'profile' } });
     };
 
-    const handleImageUpload = async (e) => {
+    {/*const handleImageUpload = async (e) => {
         const file = e.target.files[0];
         if (!file || !user) return;
 
@@ -99,7 +99,7 @@ function ProfilePage() {
         }, { merge: true });
 
         setUserData((prev) => ({ ...prev, profilePicture: downloadURL }));
-    };
+    }; */}
 
     if (loadingAuth || !userData) return <div>Loading...</div>;
 
