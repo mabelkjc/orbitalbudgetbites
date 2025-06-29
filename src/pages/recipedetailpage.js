@@ -201,14 +201,16 @@ function RecipeDetail() {
         </div>
 
         <div className="right-panel">
+          <div className="title-save-wrapper">
           <h1 className="recipe-name">{recipe.id}</h1>
-          <button className="save-button" onClick={toggleSaveRecipe}>
-            {isSaved ? 'Unsave Recipe' : 'Save Recipe'}
-          </button>
+              <button className="save-button" onClick={toggleSaveRecipe}>
+                  {isSaved ? 'Unsave Recipe' : 'Save Recipe'}
+              </button>
+          </div>
           <div className="time-rating">
-            <span className="time">⏱ {recipe.time ? `${recipe.time} mins` : '25 mins'}</span>
-            <span className="stars">{renderStars(averageRating)}</span>
-            <span className="reviews">{averageRating.toFixed(1)} ({reviews.length} reviews)</span>
+              <span className="time">⏱ {recipe.time ? `${recipe.time} mins` : '25 mins'}</span>
+              <span className="stars">{renderStars(averageRating)}</span>
+              <span className="reviews">{averageRating.toFixed(1)} ({reviews.length} reviews)</span>
           </div>
 
           <div className="tags">
