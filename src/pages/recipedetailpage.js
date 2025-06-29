@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import {
   doc, getDoc, collection, getDocs, addDoc, serverTimestamp,
-  query, orderBy
+  query, orderBy, setDoc
 } from 'firebase/firestore';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { db, auth } from '../firebase';
@@ -18,90 +18,127 @@ function RecipeDetail() {
   const [newComment, setNewComment] = useState('');
   const [newRating, setNewRating] = useState(5);
   const [user] = useAuthState(auth);
+  const [isSaved, setIsSaved] = useState(false);
 
   const selectedIngredients = location.state?.selectedIngredients || [];
   const filteredRecipes = location.state?.filteredRecipes || [];
   const backPath = location.state?.from || '/home';
 
   useEffect(() => {
-    const fetchRecipe = async () => {
-      const docRef = doc(db, 'Recipes', id);
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        setRecipe({ id: docSnap.id, ...docSnap.data() });
-      }
-    };
+      const checkIfSaved = async () => {
+          const userRef = doc(db, 'users', user.uid);
+          const userSnap = await getDoc(userRef);
+          const data = userSnap.data();
+          setIsSaved(data?.savedRecipes?.includes(id));
+      };
+      if (user) checkIfSaved();
+  }, [user, id]);
 
-    const fetchReviews = async () => {
-      const reviewsRef = collection(db, 'Recipes', id, 'reviews');
-      const reviewsQuery = query(reviewsRef, orderBy("timestamp", "desc"));
-      const querySnapshot = await getDocs(reviewsQuery);
-      const reviewPromises = querySnapshot.docs.map(async (reviewDoc) => {
-        const data = reviewDoc.data();
-        let username = 'Anonymous';
-        if (data.userId) {
-          try {
-            const userRef = doc(db, 'users', data.userId);
-            const userSnap = await getDoc(userRef);
-            if (userSnap.exists()) {
-              username = userSnap.data().username || username;
-            }
-          } catch (error) {
-            console.error("Error fetching user data:", error);
+  const toggleSaveRecipe = async () => {
+      const userRef = doc(db, 'users', user.uid);
+      const userSnap = await getDoc(userRef);
+      const data = userSnap.data();
+      const updated = isSaved
+        ? data.savedRecipes.filter(rid => rid !== id)
+        : [...(data.savedRecipes || []), id];
+
+      await setDoc(userRef, { savedRecipes: updated }, { merge: true });
+      setIsSaved(!isSaved);
+  };
+
+
+  useEffect(() => {
+      const fetchRecipe = async () => {
+          const docRef = doc(db, 'Recipes', id);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            setRecipe({ id: docSnap.id, ...docSnap.data() });
           }
-        }
-        return {
-          ...data,
-          username,
-          timestamp: data.timestamp?.toDate?.() || null
-        };
-      });
-      const resolvedReviews = await Promise.all(reviewPromises);
-      setReviews(resolvedReviews);
-    };
+      };
 
-    fetchRecipe();
-    fetchReviews();
+      const fetchReviews = async () => {
+          const reviewsRef = collection(db, 'Recipes', id, 'reviews');
+          const reviewsQuery = query(reviewsRef, orderBy("timestamp", "desc"));
+          const querySnapshot = await getDocs(reviewsQuery);
+          const reviewPromises = querySnapshot.docs.map(async (reviewDoc) => {
+              const data = reviewDoc.data();
+              let username = 'Anonymous';
+              if (data.userId) {
+                  try {
+                      const userRef = doc(db, 'users', data.userId);
+                      const userSnap = await getDoc(userRef);
+                      if (userSnap.exists()) {
+                          username = userSnap.data().username || username;
+                      }
+                  } catch (error) {
+                      console.error("Error fetching user data:", error);
+                  }
+                  }
+              return {
+                  ...data,
+                  username,
+                  timestamp: data.timestamp?.toDate?.() || null
+              };
+          });
+          const resolvedReviews = await Promise.all(reviewPromises);
+          setReviews(resolvedReviews);
+      };
+
+      fetchRecipe();
+      fetchReviews();
   }, [id]);
 
   const handleSubmitReview = async (e) => {
-    e.preventDefault();
-    if (!user) {
-      alert("You must be logged in to leave a review.");
-      return;
-    }
-    const review = {
-      comment: newComment,
-      rating: newRating,
-      timestamp: serverTimestamp(),
-      userId: user.uid,
-    };
-    await addDoc(collection(db, "Recipes", id, "reviews"), review);
-    alert("Review submitted!");
-    setNewComment('');
-    setNewRating(5);
-    const updatedReviews = await getDocs(query(collection(db, 'Recipes', id, 'reviews'), orderBy("timestamp", "desc")));
-    const reviewPromises = updatedReviews.docs.map(async (reviewDoc) => {
-      const data = reviewDoc.data();
-      let username = 'Anonymous';
-      if (data.userId) {
-        try {
-          const userRef = doc(db, 'users', data.userId);
-          const userSnap = await getDoc(userRef);
-          if (userSnap.exists()) {
-            username = userSnap.data().username || username;
-          }
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-        }
+      e.preventDefault();
+      if (!user) {
+          alert("You must be logged in to leave a review.");
+          return;
       }
-      return {
-        ...data,
-        username,
-        timestamp: data.timestamp?.toDate?.() || null
+      const review = {
+          comment: newComment,
+          rating: newRating,
+          timestamp: serverTimestamp(),
+          userId: user.uid,
       };
-    });
-    setReviews(await Promise.all(reviewPromises));
+      await addDoc(collection(db, "Recipes", id, "reviews"), review);
+      try {
+          const userRef = doc(db, 'users', user.uid);
+          const userSnap = await getDoc(userRef);
+          const userData = userSnap.data();
+
+          if (!userData.ratedRecipes?.includes(id)) {
+              await setDoc(userRef, {
+                  ratedRecipes: [...(userData.ratedRecipes || []), id]
+              }, { merge: true });
+          }
+      } catch (error) {
+          console.error("Error updating ratedRecipes:", error);
+      }
+      alert("Review submitted!");
+      setNewComment('');
+      setNewRating(5);
+      const updatedReviews = await getDocs(query(collection(db, 'Recipes', id, 'reviews'), orderBy("timestamp", "desc")));
+      const reviewPromises = updatedReviews.docs.map(async (reviewDoc) => {
+          const data = reviewDoc.data();
+          let username = 'Anonymous';
+          if (data.userId) {
+              try {
+                  const userRef = doc(db, 'users', data.userId);
+                  const userSnap = await getDoc(userRef);
+                  if (userSnap.exists()) {
+                      username = userSnap.data().username || username;
+                  }
+              } catch (error) {
+                  console.error("Error fetching user data:", error);
+              }
+          }
+          return {
+              ...data,
+              username,
+              timestamp: data.timestamp?.toDate?.() || null
+          };
+      });
+      setReviews(await Promise.all(reviewPromises));
   };
 
   const averageRating = reviews.length > 0
@@ -165,6 +202,9 @@ function RecipeDetail() {
 
         <div className="right-panel">
           <h1 className="recipe-name">{recipe.id}</h1>
+          <button className="save-button" onClick={toggleSaveRecipe}>
+            {isSaved ? 'Unsave Recipe' : 'Save Recipe'}
+          </button>
           <div className="time-rating">
             <span className="time">⏱ {recipe.time ? `${recipe.time} mins` : '25 mins'}</span>
             <span className="stars">{renderStars(averageRating)}</span>
@@ -176,25 +216,15 @@ function RecipeDetail() {
               .map((tag, i) => <span key={i} className="pill">{tag}</span>)}
           </div>
 
-          {backPath !== '/recipeindex' && (
-            <div className="missing">
-              {selectedIngredients.length === 0 ? (
-                <p>Select ingredients to see what you're missing!</p>
-              ) : missingIngredients.length > 0 ? (
-                <>
-                  <h4>You are missing...</h4>
-                  <div className="missing-content">
-                    <ul>
-                      {missingIngredients.map((item, i) => <li key={i}>{item}</li>)}
-                    </ul>
-                  </div>
-                  <button className="store-btn">Find Stores Near Me</button>
-                </>
-              ) : (
-                <p>You're not missing anything!</p>
-              )}
-            </div>
-          )}
+          <div className="missing">
+            <h4>You are missing...</h4>
+            <ul>
+              {missingIngredients.length > 0
+                ? missingIngredients.map((item, i) => <li key={i}>{item}</li>)
+                : <li>You're not missing anything!</li>}
+            </ul>
+            <button className="store-btn">Find Stores Near Me</button>
+          </div>
         </div>
       </div>
 

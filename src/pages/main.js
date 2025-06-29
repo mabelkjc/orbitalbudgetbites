@@ -3,33 +3,31 @@ import { auth, db } from '../firebase';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import './main.css';
-import { useLocation } from 'react-router-dom';
 
 const dietaryOptions = [
-  'Vegetarian',
-  'Vegan',
-  'Keto',
-  'Halal',
-  'Pescatarian',
-  'Low-carb',
+  'Vegetarian',    // No meat, may include eggs/dairy
+  'Vegan',         // No animal products at all
+  'Keto',          // High-fat, very low-carb
+  'Halal',         // Permitted under Islamic law
+  'Pescatarian',   // Vegetarian + seafood
+  'Low-carb',      // General low-carb (less strict than Keto)
 ];
 const allergyOptions = [
-  'Dairy',
-  'Nut',
-  'Shellfish',
-  'Egg',
-  'Soy',
-  'Gluten',
+  'Dairy',       // Milk, cheese, butter, cream
+  'Nuts',        // Almonds, cashews, walnuts, etc.
+  'Shellfish',   // Shrimp, crab, lobster
+  'Eggs',        // Optional — many are egg-allergic
+  'Soy',         // Soy milk, tofu, soy sauce
+  'Gluten',      // For wheat allergy or celiac (keep separate from restriction)
 ];
 const restrictionOptions = [
-  'Gluten-free',
-  'Pork-free',
-  'Red-meat-free',
-  'Alcohol-free',
-  'Egg-free',
-  'Low-sugar'
+  'Gluten-free',  // For celiac or gluten intolerance (not an allergy)
+  'Pork',         // For religious reasons (e.g. halal, kosher)
+  'Red meat',     // Beef, lamb
+  'Alcohol',      // No wine, sake, etc. used in cooking
+  'Egg-free',     // For dietary or ethical reasons (not necessarily allergy)
+  'Low sugar',
 ];
-
 
 function MainPage() {
   const [username, setUsername] = useState('');
@@ -39,8 +37,6 @@ function MainPage() {
   const [loading, setLoading] = useState(true);
   const user = auth.currentUser;
   const navigate = useNavigate();
-  const location = useLocation();
-  const fromPage = location.state?.from || "home";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -80,7 +76,7 @@ function MainPage() {
       }, { merge: true });
 
       alert('Preferences saved!');
-      navigate(`/${fromPage}`);
+      navigate('/home');
     }
   };
 

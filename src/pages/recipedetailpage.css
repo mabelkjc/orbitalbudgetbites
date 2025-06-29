@@ -1,8 +1,9 @@
+/* Fullscreen layout and background */
 body {
   margin: 0;
   padding: 0;
   background-color: white;
-  font-family: 'Georgia', serif;
+  font-family: 'Karla', sans-serif;
 }
 
 .detail-wrapper {
@@ -17,6 +18,7 @@ body {
   padding: 2rem 4vw;
   box-sizing: border-box;
   height: auto;
+  /* Removed border */
 }
 
 .left-panel {
@@ -42,6 +44,7 @@ body {
   justify-content: flex-start;
 }
 
+/* Time and rating */
 .time-rating {
   display: flex;
   align-items: center;
@@ -67,6 +70,7 @@ body {
   margin-top: 0.2rem;
 }
 
+/* Pills */
 .pill {
   display: inline-block;
   background-color: #f4f4f4;
@@ -82,25 +86,20 @@ body {
   background-color: #fff2cc;
   border-radius: 12px;
   padding: 0.5rem 1.5rem 1rem 1.5rem;
-  height: 182px;
+  height: 245px;
   overflow-y: auto;
-  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin-top: auto;
-  position: relative;
-  box-sizing: content-box;
-  scrollbar-gutter: stable both-edges;
+  margin-top: 1.5rem;
 }
 
 .missing strong {
   font-weight: bold;
-  margin-bottom: 0.4rem;
 }
 
 .missing ul {
-  columns: 3;
+  columns: 4;
   column-gap: 2rem;
   list-style-type: disc;
   padding-left: 1.2rem;
@@ -112,13 +111,29 @@ body {
   white-space: nowrap;
 }
 
-.store-btn {
-  background-color: #2e7d32;
+.save-button {
+  background-color: #16612C;
+  border: none;
   color: white;
-  padding: 0.6rem 1.2rem;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 10px 0;
+  transition: background-color 0.3s ease;
+}
+
+.save-button:hover {
+  background-color: #2e7d32;
+}
+
+.store-btn {
+  background-color: #16612C;
+  color: white;
+  padding: 0.8rem 1.2rem;
   font-size: 0.9rem;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   width: 100%;
   margin-top: auto;
@@ -188,7 +203,7 @@ h3 {
 
 .review-section button {
   align-self: flex-start;
-  background-color: #2e7d32;
+  background-color: #16612C;
   color: white;
   padding: 0.6rem 1.2rem;
   font-size: 0.9rem;
@@ -199,7 +214,7 @@ h3 {
 }
 
 .review-section button:hover {
-  background-color: #388e3c;
+  background-color: #2e7d32;
 }
 
 .review-list {
@@ -261,41 +276,5 @@ h3 {
 .justified-steps p {
   text-align: justify;
   margin-bottom: 0.5rem;
-}
-
-.missing::-webkit-scrollbar {
-  width: 9.5px;
-}
-
-.missing::-webkit-scrollbar-track {
-  background: transparent;
-  margin-top: 10px;
-  margin-bottom: 10px;
-}
-
-.missing::-webkit-scrollbar-thumb {
-  background-color: #c4c4c4;
-  border-radius: 10px;
-  border: 2px solid transparent;
-  background-clip: content-box;
-}
-
-.detail-container {
-  display: flex;
-  align-items: stretch;
-}
-
-.left-panel {
-  flex: 1;
-}
-
-.right-panel {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.missing {
-  margin-top: auto;
 }
 

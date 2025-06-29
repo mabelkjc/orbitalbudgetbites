@@ -11,36 +11,11 @@ function HomePage() {
   const location = useLocation();
 
   const availableIngredients = {
-    "Grains & Starches": [
-      'Rice', 'Quinoa', 'Pasta', 'Oat'
-    ],
-    "Proteins (Non-Seafood)": [
-      'Chicken', 'Egg', 'Tofu', 'Beef', 'Pork', 'Lamb'
-    ],
-    "Seafood": [
-      'Shrimp', 'Mussel', 'Salmon', 'Crab', 'Tuna'
-    ],
-    "Fruits & Vegetables": [
-      'Banana', 'Mango', 'Spinach', 'Onion', 'Green Onion', 'Broccoli', 'Carrot',
-      'Capsicum', 'Coriander', 'Cauliflower', 'Tomato', 'Lime', 'Garlic',
-      'Ginger', 'Mushroom', 'Pea', 'Shallot',
-    ],
-    "Dairy": [
-      'Milk', 'Cheese', 'Yogurt', 'Butter', 'Heavy Cream'
-    ],
-    "Oils & Fats": [
-      'Olive Oil', 'Oil'
-    ],
-    "Seasonings & Condiments": [
-      'Soy Sauce', 'Garlic Powder', 'Cajun Seasoning',
-      'Sesame Seed', 'Sake', 'Mirin', 'Soup Stock', 'Chicken Stock', 'Ketchup', 'Chilli Sauce'
-    ],
-    "Nuts & Seeds": [
-      'Almond'
-    ],
-    "Pantry & Baking": [
-      'Flour', 'Baking Powder'
-    ]
+    "Grains & Starches": ['Rice', 'Quinoa', 'Oats', 'Pasta', 'Flour'],
+    "Proteins (Non-Seafood)": ['Chicken', 'Eggs', 'Tofu', 'Beef', 'Pork', 'Lamb'],
+    Seafood: ['Shrimp', 'Mussels', 'Salmon', 'Crab', 'Tuna'],
+    "Fruits & Vegetables": ['Banana', 'Mango', 'Spinach', 'Onion', 'Broccoli', 'Apple'],
+    Dairy: ['Milk', 'Cheese', 'Yogurt', 'Butter', 'Cream']
   };
 
   const storedState = sessionStorage.getItem('searchState');
@@ -78,6 +53,7 @@ function HomePage() {
       const all = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setRecipes(all);
 
+      // Fallback if there's no filtered data stored
       if (!initialState.filteredRecipes) {
         setFilteredRecipes(all);
       }
@@ -113,6 +89,7 @@ function HomePage() {
       return ingredientMatch && allergySafe && restrictionSafe && dietMatch;
     });
 
+    // Build search message
     let newMessage = '';
     if (matched.length > 0) {
       if (selectedLower.length > 0) {
@@ -126,11 +103,13 @@ function HomePage() {
       newMessage = `No recipes match your filters.`;
     }
 
+    // Set states
     setFilteredRecipes(matched);
     setHasSearched(hasAnyFilters);
     setHasSearchedManually(true);
     setMessage(newMessage);
 
+    // Save to sessionStorage
     sessionStorage.setItem('searchState', JSON.stringify({
       selectedIngredients,
       filteredRecipes: matched,
