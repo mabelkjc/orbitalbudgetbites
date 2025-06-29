@@ -56,6 +56,14 @@
   font-size: 1rem;
 }
 
+.search-button {
+  margin-left: 10px;
+  padding: 0.5rem 1rem;
+  background-color: #16612C;
+  color: white;
+  font-size: 1rem;
+}
+
 .clear-icon {
   right: 2.2rem;
   font-size: 1.65rem;

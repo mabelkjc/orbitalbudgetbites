@@ -77,6 +77,3 @@ const RecipeCard = ({ recipe, selectedIngredients, filteredRecipes, fromIndexPag
 };
 
 export default RecipeCard;
-
-
-
