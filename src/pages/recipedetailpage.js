@@ -216,7 +216,7 @@ function RecipeDetail() {
               .map((tag, i) => <span key={i} className="pill">{tag}</span>)}
           </div>
 
-          {backPath !== '/recipeindex' && (
+          {Array.isArray(selectedIngredients) && backPath === '/home' && (
             <div className="missing">
               {selectedIngredients.length === 0 ? (
                 <p>Select ingredients to see what you're missing!</p>

@@ -4,7 +4,6 @@ import { auth, db } from '../firebase';
 import { signOut } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { doc, getDoc } from 'firebase/firestore';
-
 import './navbar.css';
 
 function Navbar() {
@@ -55,7 +54,7 @@ function Navbar() {
         <img src="/budgetbitesfinal.png" alt="Budget Bites Logo" />
       </Link>
       <div className="profile-menu">
-        <span className="user-icon" />
+        <img src={profilePic} alt="User Avatar" className="user-icon" />
         <button className="dropbtn" onClick={() => setDropdownVisible(!dropdownVisible)}>▼</button>
         {dropdownVisible && (
           <div className="dropdown-content">
