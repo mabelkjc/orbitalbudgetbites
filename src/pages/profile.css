@@ -115,10 +115,12 @@
 }
 
 .tag {
-  background-color: #f0f0f0;
   padding: 0.3rem 0.8rem;
-  border-radius: 999px;
-  font-size: 0.9rem;
+  border-radius: 20px;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  color: #333;
 }
 
 .editpref-button {
@@ -131,6 +133,8 @@
   font-weight: bold;
   margin-top: 1rem;
   margin-left: 0;
+  font-size: 0.9;
+  font-weight: 600;
   display: inline-block;
 }
 
