@@ -68,6 +68,7 @@ function CommunityPage() {
                     onChange={(e) => setCaption(e.target.value)}
                 />
                 <textarea
+                    className="desc-box"
                     placeholder="Write about your experience making the recipe..."
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
