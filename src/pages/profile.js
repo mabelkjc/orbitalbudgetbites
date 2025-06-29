@@ -13,6 +13,8 @@ function ProfilePage() {
     const navigate = useNavigate();
     const [user, loadingAuth] = useAuthState(auth);
     const [savedRecipes, setSavedRecipes] = useState([]);
+    const [ratedRecipes, setRatedRecipes] = useState([]);
+    const [showAvatars, setShowAvatars] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -42,11 +44,27 @@ function ProfilePage() {
         fetchSavedRecipes();
     }, [user, loadingAuth, userData]);
 
+    useEffect(() => {
+        const fetchRatedRecipes = async () => {
+            if (!loadingAuth && user && userData?.ratedRecipes?.length > 0) {
+                const recipesRef = collection(db, 'Recipes');
+                const q = query(recipesRef, where('__name__', 'in', userData.ratedRecipes.slice(0, 10))); // Limit to 10 for safety
+
+                const querySnapshot = await getDocs(q);
+                const recipeList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                setRatedRecipes(recipeList);
+            }
+        };
+
+        fetchRatedRecipes();
+    }, [user, loadingAuth, userData]);
+
+
     const handleEditPreferences = () => {
         navigate('/profile/preferences');
     };
 
-    const handleImageUpload = async (e) => {
+    const handleImageUpload = async (e) => { // to fix
         const file = e.target.files[0];
         if (!file || !user) return;
         console.log('file:', file); //to remove
@@ -103,14 +121,29 @@ function ProfilePage() {
                     className="profile-picture"
                 />
                 <div className="edit-pic">
-                <label htmlFor="profile-upload" className="edit-label">Edit</label>
-                <input
-                    id="profile-upload"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    style={{ display: 'none' }}
-                />
+                    <label className="edit-label" onClick={() => setShowAvatars(!showAvatars)}>Edit Avatar</label>
+                    {showAvatars && (
+                    <div className="avatar-selection">
+                        {['tacos.png', 'boba.png', 'onigiri.png'].map(filename => {
+                            const avatarPath = `/${filename}`;
+                            return (
+                                <img
+                                    key={filename}
+                                    src={avatarPath}
+                                    alt={filename}
+                                    className={`avatar-option ${userData.profilePicture === avatarPath ? 'selected' : ''}`}
+                                    onClick={async () => {
+                                        await setDoc(doc(db, 'users', user.uid), {
+                                            profilePicture: avatarPath
+                                        }, { merge: true });
+                                        setUserData(prev => ({ ...prev, profilePicture: avatarPath }));
+                                        setShowAvatars(false);
+                                    }}
+                                />
+                            );
+                        })}
+                    </div>
+                    )}
                 </div>
             </div>
 
@@ -138,8 +171,15 @@ function ProfilePage() {
 
             <div className="section">
                 <h3>Recipes</h3>
+                <h4>Saved by Me</h4>
                 <div className="card-row">
                     {savedRecipes.map(recipe => (
+                        <RecipeCard key={recipe.id} recipe={recipe} />
+                    ))}
+                </div>
+                <h4>Rated by Me</h4>
+                <div className="card-row">
+                    {ratedRecipes.map(recipe => (
                         <RecipeCard key={recipe.id} recipe={recipe} />
                     ))}
                 </div>
@@ -147,7 +187,7 @@ function ProfilePage() {
 
             <div className="section">
                 <h3>Community</h3>
-                <p>(Liked by me, Created by me – placeholders)</p>
+                <p>(Liked by me, Created by me - placeholders)</p>
             </div>
         </div>
         </div>

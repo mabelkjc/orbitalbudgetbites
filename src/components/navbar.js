@@ -1,45 +1,69 @@
-// src/components/Navbar.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
 import { signOut } from 'firebase/auth';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { doc, getDoc } from 'firebase/firestore';
+
 import './navbar.css';
 
 function Navbar() {
-  const navigate = useNavigate();
-  const [dropdownVisible, setDropdownVisible] = useState(false);
+    const navigate = useNavigate();
+    const [dropdownVisible, setDropdownVisible] = useState(false);
+    const [user] = useAuthState(auth);
+    const [profilePic, setProfilePic] = useState('/default-profile.png');
 
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      sessionStorage.removeItem('searchState'); // Clear homepage filters on logout
-      navigate('/login');
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
-  };
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+            sessionStorage.removeItem('searchState'); // Clear homepage filters on logout
+            navigate('/login');
+          } catch (error) {
+            console.error('Logout failed:', error);
+        }
+    };
 
-  return (
-    <div className="top-bar">
-      <nav className="nav-links">
-        <Link to="/community">Community</Link>
-        <Link to="/recipeindex">Recipe Index</Link>
-      </nav>
-      <div className="logo">
-        <img src="/budgetbitesfinal.png" alt="Budget Bites Logo" />
-      </div>
-      <div className="profile-menu">
-        <span className="user-icon" />
-        <button className="dropbtn" onClick={() => setDropdownVisible(!dropdownVisible)}>▼</button>
-        {dropdownVisible && (
-          <div className="dropdown-content">
-            <Link to="/profile">Profile</Link>
-            <button onClick={handleLogout}>Logout</button>
-          </div>
-        )}
-      </div>
-    </div>
-  );
+    useEffect(() => {
+        const fetchProfilePicture = async () => {
+            if (user) {
+                try {
+                    const docRef = doc(db, 'users', user.uid);
+                    const docSnap = await getDoc(docRef);
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        if (data.profilePicture) {
+                            setProfilePic(data.profilePicture);
+                        }
+                    }
+                } catch (error) {
+                    console.error("Failed to load profile picture:", error);
+                }
+            }
+        };
+        fetchProfilePicture();
+    }, [user]);
+
+    return (
+        <div className="top-bar">
+            <nav className="nav-links">
+                <Link to="/community">Community</Link>
+                <Link to="/recipeindex">Recipe Index</Link>
+            </nav>
+            <div className="logo">
+                <img src="/budgetbitesfinal.png" alt="Budget Bites Logo" />
+            </div>
+            <div className="profile-menu">
+                <img src={profilePic} alt="Profile" className="user-icon" />
+                <button className="dropbtn" onClick={() => setDropdownVisible(!dropdownVisible)}>▼</button>
+                {dropdownVisible && (
+                    <div className="dropdown-content">
+                        <Link to="/profile">Profile</Link>
+                        <button onClick={handleLogout}>Logout</button>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
 }
 
 export default Navbar;
