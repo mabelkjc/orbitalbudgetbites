@@ -1,7 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,200..800;1,200..800&display=swap');
-
 :root {
-  --main-color: #16612C;
+  --main-color: #2e7d32;
   --button-text: white;
 }
 
@@ -10,7 +8,7 @@ html, body {
   padding: 0;
   min-height: 100vh;
   background-color: #fff3d6;
-  font-family: 'Karla', sans-serif;
+  font-family: Arial, sans-serif;
 }
 
 .main-page {
