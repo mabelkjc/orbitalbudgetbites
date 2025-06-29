@@ -22,17 +22,17 @@ function LoginPage() {
       if (docSnap.exists()) {
         const data = docSnap.data();
         const hasPreferences =
-          (data.dietaryPreferences && data.dietaryPreferences.length > 0) ||
-          (data.allergies && data.allergies.length > 0) ||
-          (data.restrictions && data.restrictions.length > 0);
+          (data.dietaryPreferences?.length > 0) ||
+          (data.allergies?.length > 0) ||
+          (data.restrictions?.length > 0);
 
         if (hasPreferences) {
           navigate('/home');
         } else {
-          navigate('/main');
+          navigate('/profile');
         }
       } else {
-        navigate('/main');
+        navigate('/profile');
       }
     } catch (error) {
       alert("Login failed: " + error.message);
@@ -41,9 +41,7 @@ function LoginPage() {
 
   return (
     <div className="landing-container">
-      
-      <header
-        className="landing-header">
+      <header className="landing-header">
         <img src="/budgetbites-nobg.png" alt="Budget Bites Logo" className="landing-logo" />
         <h1 className="headline">Tired of wondering what to cook?</h1>
         <div className="tagline">
@@ -105,3 +103,4 @@ function LoginPage() {
 }
 
 export default LoginPage;
+

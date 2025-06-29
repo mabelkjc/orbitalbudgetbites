@@ -4,17 +4,21 @@ import Login from "./pages/login.js";
 import Registration from "./pages/registration.js";
 import Main from './pages/main.js';
 import HomePage from './pages/home';
+import RecipeDetail from './pages/recipedetailpage.js';
+import RecipeIndexPage from './pages/recipeindexpage.js';
 
 function App() {
   return (
     <Router>
       <div className="container mt-4">
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
           <Route path="/registration" element={<Registration />} />
           <Route path="/profile" element={<Main />} />
           <Route path="/home" element={<HomePage />} />
+          <Route path="/recipe/:id" element={<RecipeDetail />} />
+          <Route path="/recipeindex" element={<RecipeIndexPage />} />
         </Routes>
       </div>
     </Router>
@@ -22,6 +26,7 @@ function App() {
 }
 
 export default App;
+
 
 
 
