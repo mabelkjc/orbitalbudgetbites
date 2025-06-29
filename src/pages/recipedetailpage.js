@@ -216,15 +216,25 @@ function RecipeDetail() {
               .map((tag, i) => <span key={i} className="pill">{tag}</span>)}
           </div>
 
-          <div className="missing">
-            <h4>You are missing...</h4>
-            <ul>
-              {missingIngredients.length > 0
-                ? missingIngredients.map((item, i) => <li key={i}>{item}</li>)
-                : <li>You're not missing anything!</li>}
-            </ul>
-            <button className="store-btn">Find Stores Near Me</button>
-          </div>
+          {backPath !== '/recipeindex' && (
+            <div className="missing">
+              {selectedIngredients.length === 0 ? (
+                <p>Select ingredients to see what you're missing!</p>
+              ) : missingIngredients.length > 0 ? (
+                <>
+                  <h4>You are missing...</h4>
+                  <div className="missing-content">
+                    <ul>
+                      {missingIngredients.map((item, i) => <li key={i}>{item}</li>)}
+                    </ul>
+                  </div>
+                  <button className="store-btn">Find Stores Near Me</button>
+                </>
+              ) : (
+                <p>You're not missing anything!</p>
+              )}
+            </div>
+          )}
         </div>
       </div>
 

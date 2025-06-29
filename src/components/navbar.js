@@ -16,7 +16,9 @@ function Navbar() {
     const handleLogout = async () => {
         try {
             await signOut(auth);
-            sessionStorage.removeItem('searchState'); // Clear homepage filters on logout
+            sessionStorage.removeItem('searchState');
+            localStorage.removeItem('searchTerm');
+            localStorage.removeItem('sortBy');
             navigate('/login');
           } catch (error) {
             console.error('Logout failed:', error);
@@ -43,27 +45,29 @@ function Navbar() {
         fetchProfilePicture();
     }, [user]);
 
-    return (
-        <div className="top-bar">
-            <nav className="nav-links">
-                <Link to="/community">Community</Link>
-                <Link to="/recipeindex">Recipe Index</Link>
-            </nav>
-            <div className="logo">
-                <img src="/budgetbitesfinal.png" alt="Budget Bites Logo" />
-            </div>
-            <div className="profile-menu">
-                <img src={profilePic} alt="Profile" className="user-icon" />
-                <button className="dropbtn" onClick={() => setDropdownVisible(!dropdownVisible)}>▼</button>
-                {dropdownVisible && (
-                    <div className="dropdown-content">
-                        <Link to="/profile">Profile</Link>
-                        <button onClick={handleLogout}>Logout</button>
-                    </div>
-                )}
-            </div>
-        </div>
-    );
+  return (
+    <div className="top-bar">
+      <nav className="nav-links">
+        <Link to="/community">Community</Link>
+        <Link to="/recipeindex">Recipe Index</Link>
+      </nav>
+      <Link to="/home" className="logo">
+        <img src="/budgetbitesfinal.png" alt="Budget Bites Logo" />
+      </Link>
+      <div className="profile-menu">
+        <span className="user-icon" />
+        <button className="dropbtn" onClick={() => setDropdownVisible(!dropdownVisible)}>▼</button>
+        {dropdownVisible && (
+          <div className="dropdown-content">
+            <Link to="/profile"state={{ from: window.location.pathname === "/recipeindex" ? "recipeindex" : "home" }}>
+            Profile
+            </Link>
+            <button onClick={handleLogout}>Logout</button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default Navbar;
