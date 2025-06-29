@@ -61,7 +61,7 @@ function ProfilePage() {
 
 
     const handleEditPreferences = () => {
-        navigate('/profile/preferences');
+        navigate('/profile/preferences', { state: { from: 'profile' } });
     };
 
     const handleImageUpload = async (e) => { // to fix
