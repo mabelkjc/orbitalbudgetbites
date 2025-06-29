@@ -75,11 +75,13 @@
 .avatar-selection::-webkit-scrollbar {
   width: 9.5px;
 }
+
 .avatar-selection::-webkit-scrollbar-track {
   background: transparent;
   margin-top: 10px;
   margin-bottom: 10px;
 }
+
 .avatar-selection::-webkit-scrollbar-thumb {
   background-color: #c4c4c4;
   border-radius: 10px;
@@ -151,13 +153,12 @@
   color: #666;
 }
 
-/* ✅ NEW: Wrapper for recipe card rows for proper alignment */
+
 .card-wrapper {
-  padding-left: 0.5rem;  /* Adjust this to match h3 alignment */
+  padding-left: 0.5rem;
   padding-right: 0.5rem;
   overflow-x: auto;
 }
-
 
 .card-row {
   display: grid;
@@ -167,7 +168,7 @@
   overflow-y: auto;
   overflow-x: hidden;
   padding: 0.5rem 1.2rem 0.5rem 0;
-  margin: 3rem 0;
+  margin: 1.8rem 0;
   scrollbar-gutter: stable both-edges;
 }
 
@@ -180,6 +181,7 @@
   margin-top: 10px;
   margin-bottom: 10px;
 }
+
 .card-row::-webkit-scrollbar-thumb {
   background-color: #c4c4c4;
   border-radius: 10px;
@@ -188,5 +190,5 @@
 }
 
 .section h4 {
-  margin: 3rem 0;
+  margin: 1.8rem 0;
 }
