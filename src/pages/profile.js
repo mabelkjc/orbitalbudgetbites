@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { doc, getDoc, setDoc, collection, getDocs, query, where } from 'firebase/firestore';
-import { createSupabaseWithAuth } from '../supabase';
 import Navbar from '../components/navbar';
 import RecipeCard from '../components/recipecard';
 import './profile.css';
@@ -62,44 +61,6 @@ function ProfilePage() {
     const handleEditPreferences = () => {
         navigate('/profile/preferences', { state: { from: 'profile' } });
     };
-
-    {/*const handleImageUpload = async (e) => {
-        const file = e.target.files[0];
-        if (!file || !user) return;
-
-        const token = await auth.currentUser.getIdToken();
-        const supabaseWithAuth = createSupabaseWithAuth(token);
-
-        const fileExt = file.name.split('.').pop();
-        const filePath = `${user.uid}.${fileExt}`;
-
-        const { error: uploadError } = await supabaseWithAuth
-            .storage
-            .from('profile-pictures')
-            .upload(filePath, file, {
-                upsert: true,
-                contentType: file.type
-            });
-
-        if (uploadError) {
-            console.error(uploadError);
-            alert('Upload failed.');
-            return;
-        }
-
-        const { data: publicUrlData } = supabaseWithAuth
-            .storage
-            .from('profile-pictures')
-            .getPublicUrl(filePath);
-
-        const downloadURL = publicUrlData.publicUrl;
-
-        await setDoc(doc(db, 'users', user.uid), {
-            profilePicture: downloadURL
-        }, { merge: true });
-
-        setUserData((prev) => ({ ...prev, profilePicture: downloadURL }));
-    }; */}
 
     if (loadingAuth || !userData) return <div>Loading...</div>;
 

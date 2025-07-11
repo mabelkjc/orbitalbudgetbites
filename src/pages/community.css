@@ -14,19 +14,6 @@
     margin-top: 1rem;
 }
 
-.post-card {
-    background-color: #fef2d0;
-    border-radius: 12px;
-    padding: 1rem;
-    overflow: hidden;
-}
-
-.post-card img {
-    width: 100%;
-    border-radius: 8px;
-    margin-bottom: 0.5rem;
-}
-
 .post-info {
     font-size: 0.85rem;
     color: #555;
