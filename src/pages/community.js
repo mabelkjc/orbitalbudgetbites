@@ -99,6 +99,8 @@ function CommunityPage() {
             console.error('Failed to save post:', error);
             alert('Failed to save post.');
         }
+
+        console.log('Image uploaded to:', imageUrl); // to remove
     };
 
     if (loadingPosts) return <div>Loading...</div>;
@@ -107,7 +109,7 @@ function CommunityPage() {
         <div className="community-wrapper">
         <Navbar />
         <div className="community-container">
-            <h2>Community</h2>
+            <h2 className="community-header">Community</h2>
 
             <div className="post-grid">
                 {posts.length === 0 ? (
@@ -160,7 +162,7 @@ function CommunityPage() {
                         setImageFile(null);
                         setImagePreview(null)
                     }}>
-                    Clear
+                        Clear
                     </button>
                     <button className="submit-btn" onClick={handleSubmitPost}>
                         Submit
