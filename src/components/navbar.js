@@ -18,6 +18,7 @@ function Navbar() {
             sessionStorage.removeItem('searchState');
             localStorage.removeItem('searchTerm');
             localStorage.removeItem('sortBy');
+            localStorage.removeItem('budgetBitesLocation');
             navigate('/login');
         } catch (error) {
               console.error('Logout failed:', error);

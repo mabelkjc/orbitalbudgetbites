@@ -8,6 +8,7 @@ import RecipeDetail from './pages/recipedetailpage.js';
 import RecipeIndexPage from './pages/recipeindexpage.js';
 import ProfilePage from './pages/profile.js';
 import CommunityPage from "./pages/community.js";
+import FindStores from './pages/findstores.js';
 
 function App() {
     return (
@@ -24,6 +25,7 @@ function App() {
                     <Route path="/home" element={<HomePage />} />
                     <Route path="/recipe/:id" element={<RecipeDetail />} />
                     <Route path="/recipeindex" element={<RecipeIndexPage />} />
+                    <Route path="/find-stores" element={<FindStores />} />
                 </Routes>
             </div>
         </Router>
