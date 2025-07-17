@@ -198,7 +198,7 @@ function RecipeDetail() {
 
                 <div className="right-panel">
                     <div className="title-save-wrapper">
-                    <h1 className="recipe-name">{recipe.id}</h1>
+                        <h1 className="recipe-name">{recipe.id}</h1>
                         <button className="save-button" onClick={toggleSaveRecipe}>
                             {isSaved ? 'Unsave Recipe' : 'Save Recipe'}
                         </button>
