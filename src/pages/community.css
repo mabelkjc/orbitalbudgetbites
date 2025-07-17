@@ -4,27 +4,29 @@
 }
 
 .community-container {
-    padding: 2rem 4vw;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.community-header {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    position: relative;
+    line-height: 1;
 }
 
 .post-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4rem;
     margin-top: 1rem;
+    justify-items: center;
 }
 
-.post-card {
-    background-color: #fef2d0;
-    border-radius: 12px;
-    padding: 1rem;
-    overflow: hidden;
-}
-
-.post-card img {
-    width: 100%;
-    border-radius: 8px;
-    margin-bottom: 0.5rem;
+.community-wrapper .post-card {
+    width: 350px;
 }
 
 .post-info {
@@ -52,7 +54,11 @@
     background-color: #fff3d6;
     padding: 2rem;
     border-radius: 12px;
-    margin-top: 3rem;
+    margin-top: 4rem;
+    width: 900px;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .create-post h3 {
@@ -81,15 +87,15 @@
     position: absolute;
     top: -10px;
     right: -10px;
-    background: #f44336;
+    background: #333;
     color: white;
     border: none;
     border-radius: 50%;
     cursor: pointer;
     width: 24px;
     height: 24px;
-    font-weight: bold;
-    font-size: 14px;
+    font-weight: 400;
+    font-size: 12px;
 }
 
 .create-post input[type="text"],

@@ -53,8 +53,8 @@ const RecipeCard = ({ recipe, selectedIngredients, filteredRecipes, fromPage }) 
                     src={imagePath}
                     alt={recipe.name || recipe.id}
                     onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = '/default.jpg';
+                        e.target.onerror = null;
+                        e.target.src = '/silly.png';
                     }}
                 />
                 <div className="recipe-card-content">
