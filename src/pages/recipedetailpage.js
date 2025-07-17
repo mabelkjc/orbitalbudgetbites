@@ -226,7 +226,20 @@ function RecipeDetail() {
                                         {missingIngredients.map((item, i) => <li key={i}>{item}</li>)}
                                     </ul>
                                 </div>
-                                <button className="store-btn">Find Stores Near Me</button>
+                                <button
+                                className="store-btn"
+                                onClick={() =>
+                                    navigate('/find-stores', {
+                                    state: {
+                                        from: `/recipe/${id}`,
+                                        selectedIngredients,
+                                        filteredRecipes
+                                    }
+                                    })
+                                }
+                                >
+                                Find Stores Near Me
+                                </button>
                                 </>
                             ) : (
                                 <p>You're not missing anything!</p>
