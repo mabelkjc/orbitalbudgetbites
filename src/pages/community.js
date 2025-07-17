@@ -15,6 +15,7 @@ function CommunityPage() {
     const [imagePreview, setImagePreview] = useState(null);
     const [loadingPosts, setLoadingPosts] = useState(true);
     const [user] = useAuthState(auth);
+    const [visiblePosts, setVisiblePosts] = useState(6);
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -59,12 +60,15 @@ function CommunityPage() {
             return;
         }
 
-        let username = 'Anonymous';
+        let username = '';
+        let profilePicture = '/default-profile.png';
         try {
             const userRef = doc(db, 'users', user.uid);
             const userSnap = await getDoc(userRef);
             if (userSnap.exists()) {
-                username = userSnap.data().username || username;
+                const data = userSnap.data();
+                username = data.username || username;
+                profilePicture = data.profilePicture || profilePicture;
             }
         } catch (error) {
             console.error('Error fetching user profile:', error);
@@ -77,6 +81,7 @@ function CommunityPage() {
             createdAt: serverTimestamp(),
             userId: user.uid,
             username: username,
+            profilePicture: profilePicture,
         };
 
         try {
@@ -86,7 +91,7 @@ function CommunityPage() {
             setCaption('');
             setDescription('');
             setImageFile(null);
-            setImagePreview(null); // see how this 4 lines (clear form)
+            setImagePreview(null);
 
             const q = query(collection(db, 'communityPosts'), orderBy('createdAt', 'desc'));
             const querySnapshot = await getDocs(q);
@@ -115,13 +120,20 @@ function CommunityPage() {
                 {posts.length === 0 ? (
                     <p className="no-posts-message">There are no posts found.</p>
                 ) : (
-                    posts.map(post => (
+                    posts.slice(0, visiblePosts).map(post => (
                         <PostCard key={post.id} post={post} />
                     ))
                 )}
             </div>
 
-            <button className="load-more-btn">Load more posts</button> {/* unfinished */}
+            {visiblePosts < posts.length && (
+                <button
+                    className="load-more-btn"
+                    onClick={() => setVisiblePosts(prev => prev + 6)}
+                >
+                    Load more posts
+                </button>
+            )}
 
             <div className="create-post">
                 <h3>Create a Post</h3>

@@ -5,6 +5,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { doc, getDoc, setDoc, collection, getDocs, query, where } from 'firebase/firestore';
 import Navbar from '../components/navbar';
 import RecipeCard from '../components/recipecard';
+import PostCard from '../components/postcard';
 import './profile.css';
 
 function ProfilePage() {
@@ -14,6 +15,8 @@ function ProfilePage() {
     const [savedRecipes, setSavedRecipes] = useState([]);
     const [ratedRecipes, setRatedRecipes] = useState([]);
     const [showAvatars, setShowAvatars] = useState(false);
+    const [likedPosts, setLikedPosts] = useState([]);
+    const [createdPosts, setCreatedPosts] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -57,6 +60,21 @@ function ProfilePage() {
 
         fetchRatedRecipes();
     }, [user, loadingAuth, userData]);
+
+    useEffect(() => {
+        const fetchCommunityPosts = async () => {
+            if (!loadingAuth && user) {
+                const postsRef = collection(db, 'communityPosts');
+                const snapshot = await getDocs(postsRef);
+                const allPosts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                setLikedPosts(allPosts.filter(p => Array.isArray(p.likes) && p.likes.includes(user.uid)));
+                setCreatedPosts(allPosts.filter(p => p.userId === user.uid));
+            }
+        };
+
+        fetchCommunityPosts();
+    }, [user, loadingAuth]);
 
     const handleEditPreferences = () => {
         navigate('/profile/preferences', { state: { from: 'profile' } });
@@ -126,27 +144,62 @@ function ProfilePage() {
 
                 <div className="section">
                     <h3>Recipes</h3>
+
                     <h4>Saved by Me</h4>
                     <div className="card-wrapper">
-                        <div className="card-row">
-                            {savedRecipes.map(recipe => (
-                                <RecipeCard key={recipe.id} recipe={recipe} fromPage="/profile" />
-                            ))}
-                        </div>
+                        {savedRecipes.length > 0 ? (
+                            <div className="card-row">
+                                {savedRecipes.map(recipe => (
+                                    <RecipeCard key={recipe.id} recipe={recipe} fromPage="/profile" />
+                                ))}
+                            </div>
+                        ) : (
+                            <p>You haven't saved any recipes yet.</p>
+                        )}
                     </div>
+
                     <h4>Rated by Me</h4>
                     <div className="card-wrapper">
-                        <div className="card-row">
-                            {ratedRecipes.map(recipe => (
-                                <RecipeCard key={recipe.id} recipe={recipe} fromPage="/profile" />
-                            ))}
-                        </div>
+                        {ratedRecipes.length > 0 ? (
+                            <div className="card-row">
+                                {ratedRecipes.map(recipe => (
+                                    <RecipeCard key={recipe.id} recipe={recipe} fromPage="/profile" />
+                                ))}
+                            </div>
+                        ) : (
+                            <p>You haven't rated any recipes yet.</p>
+                        )}
                     </div>
                 </div>
 
                 <div className="section">
                     <h3>Community</h3>
-                    <p>(Liked by me, Created by me - placeholders)</p>
+
+                    <h4>Liked by Me</h4>
+                    <div className="card-wrapper">
+                        {likedPosts.length > 0 ? (
+                            <div className="card-row">
+                                {likedPosts.map(post => (
+                                    <PostCard key={post.id} post={post} />
+                                ))}
+                            </div>
+                        ) : (
+                            <p>You haven't liked any posts yet.</p>
+                        )}
+                    </div>
+
+                    <h4>Created by Me</h4>
+                    <div className="card-wrapper">
+                        {createdPosts.length > 0 ? (
+                            <div className="card-row">
+                                {createdPosts.map(post => (
+                                    <PostCard key={post.id} post={post} />
+                                ))}
+                            </div>
+                        ) : (
+                            <p>You haven't created any posts yet.</p>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>

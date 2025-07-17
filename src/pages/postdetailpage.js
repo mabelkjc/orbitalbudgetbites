@@ -18,36 +18,68 @@ function PostDetailPage() {
             const postRef = doc(db, 'communityPosts', postId);
             const postSnap = await getDoc(postRef);
             if (postSnap.exists()) {
-                setPost(postSnap.data());
+                const postData = postSnap.data();
+                if (!Array.isArray(postData.likes)) {
+                    postData.likes = [];
+                }
+                setPost(postData);
             }
         };
         fetchPost();
     }, [postId]);
 
-    const handleLike = async () => {
+    const toggleLikePost = async () => {
+        if (!user || !post) return;
+
         const postRef = doc(db, 'communityPosts', postId);
-        await updateDoc(postRef, {
-            likes: arrayUnion(user.uid)
-        });
-        setPost(prev => ({ ...prev, likes: [...(prev.likes || []), user.uid] }));
+        const hasLiked = post.likes?.includes(user.uid);
+
+        let updatedLikes;
+        if (hasLiked) {
+            updatedLikes = post.likes.filter(uid => uid !== user.uid);
+        } else {
+            updatedLikes = [...(post.likes || []), user.uid];
+        }
+
+        await updateDoc(postRef, { likes: updatedLikes });
+
+        setPost(prev => ({
+            ...prev,
+            likes: updatedLikes,
+        }));
     };
 
     const handleComment = async () => {
         if (!newComment.trim()) return;
-        const postRef = doc(db, 'communityPosts', postId);
+
+        let username = '';
+        try {
+            const userRef = doc(db, 'users', user.uid);
+            const userSnap = await getDoc(userRef);
+            if (userSnap.exists()) {
+                username = userSnap.data().username || username;
+            }
+        } catch (error) {
+            console.error('Error fetching user profile:', error);
+        }
+
         const comment = {
             text: newComment,
             userId: user.uid,
-            username: user.displayName || 'Anonymous',
-            createdAt: new Date().toISOString() //need change?
+            username: username,
+            createdAt: new Date().toISOString()
         };
+
+        const postRef = doc(db, 'communityPosts', postId);
         await updateDoc(postRef, {
             comments: arrayUnion(comment)
         });
+
         setPost(prev => ({
             ...prev,
             comments: [...(prev.comments || []), comment]
         }));
+
         setNewComment('');
     };
 
@@ -62,45 +94,67 @@ function PostDetailPage() {
             <Navbar />
             <div className="post-detail-container">
                 <button className="back-button" onClick={() => navigate(-1)}>← Back</button>
-                <img
-                    src={post.imageUrl}
-                    alt="post"
-                    className="post-detail-image"
-                    onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = '/default.jpg';
-                    }}
-                />
-                <div className="post-detail-content">
-                    <h2>{post.caption}</h2>
-                    <p className="author">By {post.username}</p>
-                    <p className="timestamp">{formattedDate}</p>
-                    <p className="desc">{post.description}</p>
 
-                    <div className="post-detail-actions">
-                        <button onClick={handleLike}>
-                            ❤️ {post.likes ? post.likes.length : 0}
-                        </button>
+                <div className="post-header">
+                    <div className="author-info">
+                        <img
+                            src={post.profilePicture || '/default-profile.png'}
+                            alt="profile"
+                            className="author-image"
+                        />
+                        <div>
+                            <p className="author">{post.username}</p>
+                            <p className="timestamp">{formattedDate}</p>
+                        </div>
                     </div>
 
-                    <div className="comment-section">
-                        <h3>Comments</h3>
-                        <div className="comment-list">
-                            {(post.comments || []).map((c, i) => (
-                                <div key={i} className="comment">
-                                    <strong>{c.username}</strong>: {c.text}
+                    <div className="like-container">
+                        <button className="like-button" onClick={toggleLikePost}>
+                            {post.likes.includes(user?.uid) ? 'Unlike' : 'Like'}
+                        </button>
+                        <span className="like-count">{post.likes.length} likes</span>
+                    </div>
+                </div>
+
+                <div className="post-body">
+                    <img
+                        src={post.imageUrl}
+                        alt="post"
+                        className="post-detail-image"
+                        onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = '/silly.png';
+                        }}
+                    />
+                    <div className="post-detail-content">
+                        <h2>{post.caption}</h2> 
+                        <p className="desc">{post.description}</p>
+                    </div>
+                </div>
+
+                <div className="comment-section">
+                    <h3>Comments ({(post.comments || []).length})</h3>
+                    <div className="comment-form">
+                        <textarea
+                            placeholder="What did you feel about this post?"
+                            value={newComment}
+                            onChange={(e) => setNewComment(e.target.value)}
+                        />
+                        <div className="comment-buttons">
+                            <button onClick={() => setNewComment('')}>Clear</button>
+                            <button className="submit-comment" onClick={handleComment}>Submit</button>
+                        </div>
+                    </div>
+                    <div className="comment-list">
+                        {(post.comments || []).map((c, i) => (
+                            <div key={i} className="comment-card">
+                                <strong>{c.username}</strong>
+                                <div className="comment-date">
+                                    {new Date(c.createdAt).toLocaleDateString()} {new Date(c.createdAt).toLocaleTimeString()}
                                 </div>
-                            ))}
-                        </div>
-                        <div className="comment-form">
-                            <input
-                                type="text"
-                                placeholder="Write a comment..."
-                                value={newComment}
-                                onChange={(e) => setNewComment(e.target.value)}
-                            />
-                            <button onClick={handleComment}>Post</button>
-                        </div>
+                                <p>{c.text}</p>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>

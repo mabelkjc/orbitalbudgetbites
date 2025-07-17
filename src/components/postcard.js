@@ -13,6 +13,9 @@ const PostCard = ({ post }) => {
         ? `${post.createdAt.toDate().toLocaleDateString()} ${post.createdAt.toDate().toLocaleTimeString()}`
         : 'Just now';
 
+    const likeCount = Array.isArray(post.likes) ? post.likes.length : 0;
+    const commentCount = Array.isArray(post.comments) ? post.comments.length : 0;
+
     return (
         <div className="post-card-link" onClick={handleClick}>
             <div className="post-card">
@@ -22,7 +25,7 @@ const PostCard = ({ post }) => {
                     alt={post.caption}
                     onError={(e) => {
                         e.target.onerror = null;
-                        e.target.src = '/default.jpg';
+                        e.target.src = '/silly.png';
                     }}
                 />
                 <div className="post-card-content">
@@ -33,8 +36,8 @@ const PostCard = ({ post }) => {
                     <div className="post-card-footer">
                         <div className="post-card-date">{formattedDate}</div>
                         <div className="post-card-stats">
-                            <span>❤️ 0</span>
-                            <span>💬 0</span>
+                            <span>❤️ {likeCount}</span>
+                            <span>💬 {commentCount}</span>
                         </div>
                     </div>
                 </div>
