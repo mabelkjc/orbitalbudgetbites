@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { GoogleMap, LoadScript, Marker, Autocomplete } from '@react-google-maps/api';
 import Navbar from '../components/navbar';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -80,7 +80,7 @@ function FindStores() {
     localStorage.removeItem(DENIED_FLAG_KEY);
   };
 
-  const getUserLocation = () => {
+  const getUserLocation = useCallback(() => {
     setIsLoadingLocation(true);
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -99,7 +99,7 @@ function FindStores() {
         setIsLoadingLocation(false);
       }
     );
-  };
+  }, []);
 
   const handlePlaceSelected = () => {
     const place = autocompleteRef.current.getPlace();
@@ -125,7 +125,7 @@ function FindStores() {
     } else {
       getUserLocation();
     }
-  }, []);
+  }, [getUserLocation]);
 
   useEffect(() => {
     if (userLocation && mapRef.current && window.google?.maps?.places) {
@@ -259,3 +259,4 @@ function FindStores() {
 }
 
 export default FindStores;
+
