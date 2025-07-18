@@ -28,7 +28,7 @@ body {
 
 .main-image {
     width: 100%;
-    max-width: 600px;
+    max-width: 760px;
     height: 400px;
     object-fit: cover;
     border-radius: 12px;
