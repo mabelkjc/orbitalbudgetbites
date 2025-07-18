@@ -247,7 +247,7 @@ html, body {
 
 .recipe-list {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 70px;
     row-gap: 35px;
     position: relative;
