@@ -11,36 +11,22 @@ function HomePage() {
     const location = useLocation();
 
     const availableIngredients = {
-        "Grains & Starches": [
-            'Rice', 'Quinoa', 'Pasta', 'Oat'
-        ],
-        "Proteins (Non-Seafood)": [
-            'Chicken', 'Egg', 'Tofu', 'Beef', 'Pork', 'Lamb'
-        ],
-        "Seafood": [
-            'Shrimp', 'Mussel', 'Salmon', 'Crab', 'Tuna'
-        ],
+        "Grains & Starches": ['Rice', 'Quinoa', 'Pasta', 'Oat', 'Bread', 'Ramen'],
+        "Proteins (Non-Seafood)": ['Chicken', 'Egg', 'Tofu', 'Beef', 'Pork', 'Lamb'],
+        "Seafood": ['Shrimp', 'Mussel', 'Salmon', 'Crab', 'Tuna'],
         "Fruits & Vegetables": [
             'Banana', 'Mango', 'Spinach', 'Onion', 'Green Onion', 'Broccoli', 'Carrot',
             'Capsicum', 'Coriander', 'Cauliflower', 'Tomato', 'Lime', 'Garlic',
-            'Ginger', 'Mushroom', 'Pea', 'Shallot',
+            'Ginger', 'Mushroom', 'Pea', 'Shallot', 'Avocado'
         ],
-        "Dairy": [
-            'Milk', 'Cheese', 'Yogurt', 'Butter', 'Heavy Cream'
-        ],
-        "Oils & Fats": [
-            'Olive Oil', 'Oil'
-        ],
+        "Dairy": ['Milk', 'Cheese', 'Yogurt', 'Butter', 'Heavy Cream'],
+        "Oils & Fats": ['Olive Oil', 'Oil'],
         "Seasonings & Condiments": [
             'Soy Sauce', 'Garlic Powder', 'Cajun Seasoning',
-            'Sesame Seed', 'Sake', 'Mirin', 'Soup Stock', 'Chicken Stock', 'Ketchup', 'Chilli Sauce'
+            'Sesame Seed', 'Sake', 'Mirin', 'Soup Stock', 'Chicken Stock', 'Ketchup', 'Chilli Sauce', 'Rice Vinegar', 'Miso Paste', 'Chilli Oil'
         ],
-        "Nuts & Seeds": [
-            'Almond'
-        ],
-        "Pantry & Baking": [
-            'Flour', 'Baking Powder'
-        ]
+        "Nuts & Seeds": ['Almond'],
+        "Pantry & Baking": ['Flour', 'Baking Powder']
     };
 
     const storedState = sessionStorage.getItem('searchState');
@@ -77,7 +63,6 @@ function HomePage() {
             const snapshot = await getDocs(collection(db, 'Recipes'));
             const all = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             setRecipes(all);
-
             if (!initialState.filteredRecipes) {
                 setFilteredRecipes(all);
             }
@@ -158,77 +143,75 @@ function HomePage() {
 
     return (
         <div className="home-wrapper">
-        <Navbar />
+            <Navbar />
+            <div className="main-section">
+                <aside className="sidebar">
+                    <div className="sidebar-scroll">
+                        <h3>Dietary Preference:</h3>
+                        <div className="pill-grid">
+                            {userPreferences.length
+                                ? userPreferences.map(p => <span key={p} className="pill">{p}</span>)
+                                : <span className="pill">None</span>}
+                        </div>
 
-        <div className="main-section">
-            <aside className="sidebar">
-            <div className="sidebar-scroll">
-                <h3>Dietary Preference:</h3>
-                <div className="pill-grid">
-                    {userPreferences.length
-                        ? userPreferences.map(p => <span key={p} className="pill">{p}</span>)
-                        : <span className="pill">None</span>}
-                </div>
+                        <h3>Allergies:</h3>
+                        <div className="pill-grid">
+                            {userAllergies.length
+                                ? userAllergies.map(a => <span key={a} className="pill">{a}</span>)
+                                : <span className="pill">None</span>}
+                        </div>
 
-                <h3>Allergies:</h3>
-                <div className="pill-grid">
-                    {userAllergies.length
-                        ? userAllergies.map(a => <span key={a} className="pill">{a}</span>)
-                        : <span className="pill">None</span>}
-                </div>
+                        <h3>Restrictions:</h3>
+                        <div className="pill-grid">
+                            {userRestrictions.length
+                                ? userRestrictions.map(r => <span key={r} className="pill">{r}</span>)
+                                : <span className="pill">None</span>}
+                        </div>
 
-                <h3>Restrictions:</h3>
-                <div className="pill-grid">
-                    {userRestrictions.length
-                        ? userRestrictions.map(r => <span key={r} className="pill">{r}</span>)
-                        : <span className="pill">None</span>}
-                </div>
-
-                <h3>Select your ingredients:</h3>
-                {Object.entries(availableIngredients).map(([category, items]) => (
-                <div key={category} className="filter-category">
-                    <div className="filter-header">{category}</div>
-                    <div className="checkbox-list">
-                        {items.map(item => (
-                            <label key={item} className="checkbox-item">
-                                <input
-                                    type="checkbox"
-                                    checked={selectedIngredients.includes(item)}
-                                    onChange={() => handleMultiSelect(category, item)}
-                                />
-                              {item}
-                            </label>
+                        <h3>Select your ingredients:</h3>
+                        {Object.entries(availableIngredients).map(([category, items]) => (
+                            <div key={category} className="filter-category">
+                                <div className="filter-header">{category}</div>
+                                <div className="checkbox-list">
+                                    {items.map(item => (
+                                        <label key={item} className="checkbox-item">
+                                            <input
+                                                type="checkbox"
+                                                checked={selectedIngredients.includes(item)}
+                                                onChange={() => handleMultiSelect(category, item)}
+                                            />
+                                            {item}
+                                        </label>
+                                    ))}
+                                </div>
+                            </div>
                         ))}
+                        <button onClick={handleClearAll} className="clear-btn">Clear All</button>
+                        <button onClick={handleSearch} className="search-btn">Update & Search</button>
+                    </div>
+                </aside>
+
+                <div className="recipe-scroll-area">
+                    <div className="recipe-section">
+                        {hasSearched && hasSearchedManually && (
+                            <div className="centered-search-message">{message}</div>
+                        )}
+                        <div className="recipe-list">
+                            {filteredRecipes.map(recipe => (
+                                <RecipeCard
+                                    key={recipe.id}
+                                    recipe={recipe}
+                                    selectedIngredients={selectedIngredients}
+                                    filteredRecipes={filteredRecipes}
+                                />
+                            ))}
+                        </div>
                     </div>
                 </div>
-                ))}
-                <button onClick={handleClearAll} className="clear-btn">Clear All</button>
-                <button onClick={handleSearch} className="search-btn">Update & Search</button>
             </div>
-            </aside>
-
-            <div className="recipe-scroll-area">
-            <div className="recipe-section">
-                <div className="recipe-list">
-                    {hasSearched && hasSearchedManually && (
-                        <div className="centered-search-message">{message}</div>
-                    )}
-                    {filteredRecipes.map(recipe => (
-                        <RecipeCard
-                            key={recipe.id}
-                            recipe={recipe}
-                            selectedIngredients={selectedIngredients}
-                            filteredRecipes={filteredRecipes}
-                        />
-                    ))}
-                </div>
-            </div>
-            </div>
-        </div>
         </div>
     );
 }
 
 export default HomePage;
-
 
