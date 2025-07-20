@@ -12,6 +12,7 @@ const mapContainerStyle = {
 const DEFAULT_LOCATION = { lat: 1.3048, lng: 103.8318 };
 const LOCAL_STORAGE_KEY = 'budgetBitesLocation';
 const DENIED_FLAG_KEY = 'budgetBitesLocationDenied';
+const LIBRARIES = ['places'];
 
 function FindStores() {
   const [userLocation, setUserLocation] = useState(null);
@@ -20,6 +21,7 @@ function FindStores() {
   const [currentAddress, setCurrentAddress] = useState('');
   const [isLoadingLocation, setIsLoadingLocation] = useState(true);
   const [selectedPlaceIndex, setSelectedPlaceIndex] = useState(null);
+  const [isScriptLoaded, setIsScriptLoaded] = useState(false);
 
   const autocompleteRef = useRef(null);
   const mapRef = useRef(null);
@@ -34,7 +36,6 @@ function FindStores() {
   const backPath = location.state?.from || '/home';
 
   const fetchNearbyPlaces = (loc) => {
-    if (!window.google || !window.google.maps || !window.google.maps.places) return;
     const service = new window.google.maps.places.PlacesService(mapRef.current);
     service.nearbySearch({
       location: loc,
@@ -49,7 +50,6 @@ function FindStores() {
   };
 
   const reverseGeocode = (latlng) => {
-    if (!window.google || !window.google.maps) return;
     const geocoder = new window.google.maps.Geocoder();
     geocoder.geocode({ location: latlng }, (results, status) => {
       if (status === 'OK' && results[0]) {
@@ -128,16 +128,16 @@ function FindStores() {
   }, [getUserLocation]);
 
   useEffect(() => {
-    if (userLocation && mapRef.current && window.google?.maps?.places) {
+    if (isScriptLoaded && userLocation && mapRef.current) {
       fetchNearbyPlaces(userLocation);
     }
-  }, [userLocation]);
+  }, [isScriptLoaded, userLocation]);
 
   useEffect(() => {
-    if (userLocation && window.google?.maps?.Geocoder) {
+    if (isScriptLoaded && userLocation) {
       reverseGeocode(userLocation);
     }
-  }, [userLocation]);
+  }, [isScriptLoaded, userLocation]);
 
   const handleMapLoad = (map) => {
     mapRef.current = map;
@@ -162,7 +162,11 @@ function FindStores() {
             We found <span className="store-count">{places.length}</span> grocery stores near your current location:
           </h3>
 
-          <LoadScript googleMapsApiKey={apiKey} libraries={['places']}>
+          <LoadScript
+            googleMapsApiKey={apiKey}
+            libraries={LIBRARIES}
+            onLoad={() => setIsScriptLoaded(true)}
+          >
             <div className="controls">
               <div className="top-row">
                 <span className="location-display">
@@ -171,7 +175,7 @@ function FindStores() {
                 <Autocomplete onLoad={(auto) => (autocompleteRef.current = auto)} onPlaceChanged={handlePlaceSelected}>
                   <input
                     type="text"
-                    placeholder="Or enter location (e.g., FairPrice Tampines)"
+                    placeholder="Or enter location"
                     className="manual-location-input"
                   />
                 </Autocomplete>
@@ -188,7 +192,11 @@ function FindStores() {
 
         <div className="store-content">
           <div className="map-section">
-            <LoadScript googleMapsApiKey={apiKey} libraries={['places']}>
+            <LoadScript
+              googleMapsApiKey={apiKey}
+              libraries={LIBRARIES}
+              onLoad={() => setIsScriptLoaded(true)}
+            >
               {userLocation && !isLoadingLocation && (
                 <GoogleMap
                   key={`${userLocation.lat}-${userLocation.lng}`}
@@ -259,4 +267,3 @@ function FindStores() {
 }
 
 export default FindStores;
-

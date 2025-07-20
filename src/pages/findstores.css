@@ -61,12 +61,14 @@
   cursor: pointer;
 }
 
-/* Side-by-side layout */
 .store-content {
   display: flex;
   flex-direction: row;
   gap: 1.5rem;
+  min-height: 450px; /* Already good */
+  height: auto; /* Add this to solidify layout */
 }
+
 
 /* Map section */
 .map-section {
@@ -121,11 +123,34 @@
 }
 
 .back-button {
-  margin-top: 1rem;
+  position: relative; /* ⬅️ change from absolute to prevent shift */
+  margin-top: 2rem;
   background-color: #ccc;
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 6px;
   cursor: pointer;
   font-size: 14px;
+  transition: background-color 0.2s ease;
+  z-index: 10;
+  align-self: flex-start;
 }
+
+
+.back-button.bottom {
+  position: static;
+  margin: 2rem auto 0;
+  display: inline-block;
+  background-color: #ccc;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.back-button.bottom:hover {
+  background-color: #bbb;
+}
+
