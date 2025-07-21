@@ -11,22 +11,23 @@ function HomePage() {
     const location = useLocation();
 
     const availableIngredients = {
-        "Grains & Starches": ['Rice', 'Quinoa', 'Pasta', 'Oat', 'Bread', 'Ramen'],
-        "Proteins (Non-Seafood)": ['Chicken', 'Egg', 'Tofu', 'Beef', 'Pork', 'Lamb'],
+        "Grains & Starches": ['Rice', 'Quinoa', 'Pasta', 'Oat', 'Bread', 'Ramen', 'Noodle', 'Risotto', 'Tortilla'],
+        "Proteins (Non-Seafood)": ['Chicken', 'Egg', 'Tofu', 'Beef', 'Pork', 'Lamb', 'Chicken Nugget', 'Bacon', 'Kidney Bean'],
         "Seafood": ['Shrimp', 'Mussel', 'Salmon', 'Crab', 'Tuna'],
         "Fruits & Vegetables": [
             'Banana', 'Mango', 'Spinach', 'Onion', 'Green Onion', 'Broccoli', 'Carrot',
             'Capsicum', 'Coriander', 'Cauliflower', 'Tomato', 'Lime', 'Garlic',
-            'Ginger', 'Mushroom', 'Pea', 'Shallot', 'Avocado'
+            'Ginger', 'Mushroom', 'Pea', 'Shallot', 'Avocado', 'Pepper', 'Corn', 'Beansprout', 'Pineapple', 'Parsley', 'Lettuce', 'Thyme', 'Sweet Potato'
         ],
-        "Dairy": ['Milk', 'Cheese', 'Yogurt', 'Butter', 'Heavy Cream'],
+        "Dairy": ['Milk', 'Cheese', 'Yogurt', 'Butter', 'Heavy Cream', 'Soured Cream'],
         "Oils & Fats": ['Olive Oil', 'Oil'],
         "Seasonings & Condiments": [
             'Soy Sauce', 'Garlic Powder', 'Cajun Seasoning',
-            'Sesame Seed', 'Sake', 'Mirin', 'Soup Stock', 'Chicken Stock', 'Ketchup', 'Chilli Sauce', 'Rice Vinegar', 'Miso Paste', 'Chilli Oil'
+            'Sesame Seed', 'Sake', 'Mirin', 'Soup Stock', 'Chicken Stock', 'Ketchup', 'Chilli Sauce', 'Vinegar', 'Miso Paste', 'Chilli Oil', 'Mayonnaise', 'Sriracha',
+            'Sesame Oil', 'White Wine', 'Tomato Purée', 'Chilli Powder', 'Cumin', 'Paprika', 'Worcestershire Sauce', 'Bouillon'
         ],
-        "Nuts & Seeds": ['Almond'],
-        "Pantry & Baking": ['Flour', 'Baking Powder']
+        "Nuts & Seeds": ['Almond', 'Cashew'],
+        "Pantry & Baking": ['Flour', 'Baking Powder', 'Cornflour', 'Breadcrumb']
     };
 
     const storedState = sessionStorage.getItem('searchState');

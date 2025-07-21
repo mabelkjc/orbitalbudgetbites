@@ -177,7 +177,6 @@ function RecipeDetail() {
                         })
                     }
                     style={{
-                        backgroundColor: '#ccc',
                         border: 'none',
                         padding: '0.5rem 1rem',
                         borderRadius: '6px',

@@ -9,32 +9,32 @@ initializeApp({
 const db = getFirestore();
 
 const recipe = {
-  id: "Miso Butter Ramen Noodles",
-  time: 10,
-  servings: 3,
+  id: "Sweet Potato, Spinach & Cheese Tortilla",
+  time: 25,
+  servings: 3, // as stated: 3 or 2 adults + 2 children
   ingredients: [
-    "2 (3 ounce) packages dry ramen noodles, seasoning packets discarded",
-    "3 tablespoons miso paste",
-    "2 tablespoons unsalted butter, melted",
-    "2 tablespoons lower-sodium soy sauce",
-    "1 tablespoon seasoned rice vinegar",
-    "1 tablespoon chili oil (optional)",
-    "thinly sliced green onions and sesame seeds for garnish (optional)"
+    "3 sweet potatoes",
+    "2 tbsp olive oil",
+    "100g baby spinach",
+    "6 large eggs",
+    "100g cheese, crumbled"
   ],
   method: [
-    "Fill a pot with 5 cups of water and bring to a boil.",
-    "Add ramen noodles and cook until tender, 2 to 4 minutes. Drain and reserve some noodle water.",
-    "In a bowl, whisk together miso paste, melted butter, soy sauce, and rice vinegar until smooth.",
-    "Pour sauce over drained noodles and stir to combine. Add reserved water to thin if needed.",
-    "Divide into 3 bowls. Drizzle with chili oil and garnish with green onions and sesame seeds."
+    "Pierce the sweet potatoes and microwave on high for 5–8 minutes until soft. Let cool slightly.",
+    "Heat olive oil in a 20cm ovenproof frying pan. Wilt the spinach (in batches if needed).",
+    "Halve sweet potatoes lengthwise and scoop out the flesh into chunks.",
+    "Whisk eggs. Add sweet potatoes and spinach to pan, stir gently.",
+    "Pour in eggs and swirl to fill gaps. Scatter cheese over the top.",
+    "Cook for 4–5 minutes on low heat until bottom and sides are set.",
+    "Grill top for 1–2 minutes until fully cooked (check with a knife).",
+    "Cool and slice into wedges. Keeps chilled for 1 day."
   ],
-  dietTags: ["Vegetarian"],
-  allergyTags: ["Gluten", "Soy", "Dairy"],
+  dietTags: ["Vegetarian", "Gluten-free"],
+  allergyTags: ["Egg", "Dairy"], // eggs, feta
   restrictionTags: ["Pork-free", "Red-meat-free", "Alcohol-free"],
   ingredientTags: [
-  "ramen", "miso paste", "butter", "soy sauce", "rice vinegar",
-  "green onion", "sesame seed", "chilli oil"
-]
+    "sweet potato", "olive oil", "spinach", "egg", "cheese"
+  ],
 
 };
 
