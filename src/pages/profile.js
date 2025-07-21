@@ -148,7 +148,7 @@ function ProfilePage() {
                     <h4>Saved by Me</h4>
                     <div className="card-wrapper">
                         {savedRecipes.length > 0 ? (
-                            <div className="card-row">
+                            <div className="card-row recipes">
                                 {savedRecipes.map(recipe => (
                                     <RecipeCard key={recipe.id} recipe={recipe} fromPage="/profile" />
                                 ))}
@@ -161,7 +161,7 @@ function ProfilePage() {
                     <h4>Rated by Me</h4>
                     <div className="card-wrapper">
                         {ratedRecipes.length > 0 ? (
-                            <div className="card-row">
+                            <div className="card-row recipes">
                                 {ratedRecipes.map(recipe => (
                                     <RecipeCard key={recipe.id} recipe={recipe} fromPage="/profile" />
                                 ))}
@@ -178,7 +178,7 @@ function ProfilePage() {
                     <h4>Liked by Me</h4>
                     <div className="card-wrapper">
                         {likedPosts.length > 0 ? (
-                            <div className="card-row">
+                            <div className="card-row posts">
                                 {likedPosts.map(post => (
                                     <PostCard key={post.id} post={post} />
                                 ))}
@@ -191,7 +191,7 @@ function ProfilePage() {
                     <h4>Created by Me</h4>
                     <div className="card-wrapper">
                         {createdPosts.length > 0 ? (
-                            <div className="card-row">
+                            <div className="card-row posts">
                                 {createdPosts.map(post => (
                                     <PostCard key={post.id} post={post} />
                                 ))}

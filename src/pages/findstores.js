@@ -5,8 +5,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import './findstores.css';
 
 const mapContainerStyle = {
-  width: '100%',
-  height: '450px',
+    width: '100%',
+    height: '450px',
 };
 
 const DEFAULT_LOCATION = { lat: 1.3048, lng: 103.8318 };
@@ -14,248 +14,248 @@ const LOCAL_STORAGE_KEY = 'budgetBitesLocation';
 const DENIED_FLAG_KEY = 'budgetBitesLocationDenied';
 
 function FindStores() {
-  const [userLocation, setUserLocation] = useState(null);
-  const [places, setPlaces] = useState([]);
-  const [locationDenied, setLocationDenied] = useState(false);
-  const [currentAddress, setCurrentAddress] = useState('');
-  const [isLoadingLocation, setIsLoadingLocation] = useState(true);
-  const [selectedPlaceIndex, setSelectedPlaceIndex] = useState(null);
+    const [userLocation, setUserLocation] = useState(null);
+    const [places, setPlaces] = useState([]);
+    const [locationDenied, setLocationDenied] = useState(false);
+    const [currentAddress, setCurrentAddress] = useState('');
+    const [isLoadingLocation, setIsLoadingLocation] = useState(true);
+    const [selectedPlaceIndex, setSelectedPlaceIndex] = useState(null);
 
-  const autocompleteRef = useRef(null);
-  const mapRef = useRef(null);
-  const cardRefs = useRef([]);
+    const autocompleteRef = useRef(null);
+    const mapRef = useRef(null);
+    const cardRefs = useRef([]);
 
-  const navigate = useNavigate();
-  const location = useLocation();
-  const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+    const navigate = useNavigate();
+    const location = useLocation();
+    const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
-  const selectedIngredients = location.state?.selectedIngredients || [];
-  const filteredRecipes = location.state?.filteredRecipes || [];
-  const backPath = location.state?.from || '/home';
+    const selectedIngredients = location.state?.selectedIngredients || [];
+    const filteredRecipes = location.state?.filteredRecipes || [];
+    const backPath = location.state?.from || '/home';
 
-  const fetchNearbyPlaces = (loc) => {
-    if (!window.google || !window.google.maps || !window.google.maps.places) return;
-    const service = new window.google.maps.places.PlacesService(mapRef.current);
-    service.nearbySearch({
-      location: loc,
-      keyword: 'grocery store OR minimart OR supermarket OR wet market',
-      rankBy: window.google.maps.places.RankBy.DISTANCE,
-    }, (results, status) => {
-      if (status === window.google.maps.places.PlacesServiceStatus.OK) {
-        setPlaces(results);
-        setSelectedPlaceIndex(null);
-      }
-    });
-  };
+    const fetchNearbyPlaces = (loc) => {
+        if (!window.google || !window.google.maps || !window.google.maps.places) return;
+        const service = new window.google.maps.places.PlacesService(mapRef.current);
+        service.nearbySearch({
+            location: loc,
+            keyword: 'grocery store OR minimart OR supermarket OR wet market',
+            rankBy: window.google.maps.places.RankBy.DISTANCE,
+        }, (results, status) => {
+            if (status === window.google.maps.places.PlacesServiceStatus.OK) {
+                setPlaces(results);
+                setSelectedPlaceIndex(null);
+            }
+        });
+    };
 
-  const reverseGeocode = (latlng) => {
-    if (!window.google || !window.google.maps) return;
-    const geocoder = new window.google.maps.Geocoder();
-    geocoder.geocode({ location: latlng }, (results, status) => {
-      if (status === 'OK' && results[0]) {
-        setCurrentAddress(results[0].formatted_address);
-      }
-    });
-  };
+    const reverseGeocode = (latlng) => {
+        if (!window.google || !window.google.maps) return;
+        const geocoder = new window.google.maps.Geocoder();
+        geocoder.geocode({ location: latlng }, (results, status) => {
+            if (status === 'OK' && results[0]) {
+                setCurrentAddress(results[0].formatted_address);
+            }
+        });
+    };
 
-  const saveToLocalStorage = (coords, isManual = false) => {
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({ coords, isManual }));
-    localStorage.setItem(DENIED_FLAG_KEY, 'false');
-  };
+    const saveToLocalStorage = (coords, isManual = false) => {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({ coords, isManual }));
+        localStorage.setItem(DENIED_FLAG_KEY, 'false');
+    };
 
-  const loadFromLocalStorage = () => {
-    const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (stored) {
-      try {
-        return JSON.parse(stored);
-      } catch {
-        return null;
-      }
-    }
-    return null;
-  };
-
-  const clearLocalStorage = () => {
-    localStorage.removeItem(LOCAL_STORAGE_KEY);
-    localStorage.removeItem(DENIED_FLAG_KEY);
-  };
-
-  const getUserLocation = useCallback(() => {
-    setIsLoadingLocation(true);
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const coords = { lat: position.coords.latitude, lng: position.coords.longitude };
-        setUserLocation(coords);
-        setLocationDenied(false);
-        saveToLocalStorage(coords, false);
-        setIsLoadingLocation(false);
-      },
-      (error) => {
-        if (error.code === error.PERMISSION_DENIED) {
-          setLocationDenied(true);
-          localStorage.setItem(DENIED_FLAG_KEY, 'true');
+    const loadFromLocalStorage = () => {
+        const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (stored) {
+            try {
+                return JSON.parse(stored);
+            } catch {
+                return null;
+            }
         }
-        setUserLocation(DEFAULT_LOCATION);
-        setIsLoadingLocation(false);
-      }
-    );
-  }, []);
+        return null;
+    };
 
-  const handlePlaceSelected = () => {
-    const place = autocompleteRef.current.getPlace();
-    if (place && place.geometry) {
-      const coords = {
-        lat: place.geometry.location.lat(),
-        lng: place.geometry.location.lng(),
-      };
-      setUserLocation(coords);
-      setLocationDenied(false);
-      saveToLocalStorage(coords, true);
-    }
-  };
+    const clearLocalStorage = () => {
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
+        localStorage.removeItem(DENIED_FLAG_KEY);
+    };
 
-  useEffect(() => {
-    const stored = loadFromLocalStorage();
-    const denied = localStorage.getItem(DENIED_FLAG_KEY) === 'true';
-    if (stored?.coords) {
-      setUserLocation(stored.coords);
-      if (stored.isManual || !denied) setLocationDenied(false);
-      else setLocationDenied(true);
-      setIsLoadingLocation(false);
-    } else {
-      getUserLocation();
-    }
-  }, [getUserLocation]);
+    const getUserLocation = useCallback(() => {
+        setIsLoadingLocation(true);
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const coords = { lat: position.coords.latitude, lng: position.coords.longitude };
+                setUserLocation(coords);
+                setLocationDenied(false);
+                saveToLocalStorage(coords, false);
+                setIsLoadingLocation(false);
+            },
+            (error) => {
+                if (error.code === error.PERMISSION_DENIED) {
+                    setLocationDenied(true);
+                    localStorage.setItem(DENIED_FLAG_KEY, 'true');
+                }
+                setUserLocation(DEFAULT_LOCATION);
+                setIsLoadingLocation(false);
+            }
+        );
+    }, []);
 
-  useEffect(() => {
-    if (userLocation && mapRef.current && window.google?.maps?.places) {
-      fetchNearbyPlaces(userLocation);
-    }
-  }, [userLocation]);
+    const handlePlaceSelected = () => {
+        const place = autocompleteRef.current.getPlace();
+        if (place && place.geometry) {
+            const coords = {
+                lat: place.geometry.location.lat(),
+                lng: place.geometry.location.lng(),
+            };
+            setUserLocation(coords);
+            setLocationDenied(false);
+            saveToLocalStorage(coords, true);
+        }
+    };
 
-  useEffect(() => {
-    if (userLocation && window.google?.maps?.Geocoder) {
-      reverseGeocode(userLocation);
-    }
-  }, [userLocation]);
+    useEffect(() => {
+        const stored = loadFromLocalStorage();
+        const denied = localStorage.getItem(DENIED_FLAG_KEY) === 'true';
+        if (stored?.coords) {
+            setUserLocation(stored.coords);
+            if (stored.isManual || !denied) setLocationDenied(false);
+            else setLocationDenied(true);
+            setIsLoadingLocation(false);
+        } else {
+            getUserLocation();
+        }
+    }, [getUserLocation]);
 
-  const handleMapLoad = (map) => {
-    mapRef.current = map;
-    if (userLocation) {
-      fetchNearbyPlaces(userLocation);
-    }
-  };
+    useEffect(() => {
+        if (userLocation && mapRef.current && window.google?.maps?.places) {
+            fetchNearbyPlaces(userLocation);
+        }
+    }, [userLocation]);
 
-  const scrollToCard = (index) => {
-    const card = cardRefs.current[index];
-    if (card) {
-      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-  };
+    useEffect(() => {
+        if (userLocation && window.google?.maps?.Geocoder) {
+            reverseGeocode(userLocation);
+        }
+    }, [userLocation]);
 
-  return (
-    <>
-      <Navbar clearStoreLocation={clearLocalStorage} />
-      <div className="store-wrapper">
-        <div className="store-header">
-          <h3>
-            We found <span className="store-count">{places.length}</span> grocery stores near your current location:
-          </h3>
+    const handleMapLoad = (map) => {
+        mapRef.current = map;
+        if (userLocation) {
+            fetchNearbyPlaces(userLocation);
+        }
+    };
 
-          <LoadScript googleMapsApiKey={apiKey} libraries={['places']}>
-            <div className="controls">
-              <div className="top-row">
-                <span className="location-display">
-                  <strong>Current location: </strong> {isLoadingLocation ? 'Loading...' : currentAddress}
-                </span>
-                <Autocomplete onLoad={(auto) => (autocompleteRef.current = auto)} onPlaceChanged={handlePlaceSelected}>
-                  <input
-                    type="text"
-                    placeholder="Or enter location (e.g., FairPrice Tampines)"
-                    className="manual-location-input"
-                  />
-                </Autocomplete>
-              </div>
+    const scrollToCard = (index) => {
+        const card = cardRefs.current[index];
+        if (card) {
+            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    };
 
-              {locationDenied && (
-                <div className="location-denied">
-                  ❗ Location access denied. Showing Orchard Road. To see nearby stores, please enable location access in your browser settings and refresh the page.
+    return (
+        <>
+            <Navbar clearStoreLocation={clearLocalStorage} />
+            <div className="store-wrapper">
+                <div className="store-header">
+                    <h3>
+                        We found <span className="store-count">{places.length}</span> grocery stores near your current location:
+                    </h3>
+
+                    <LoadScript googleMapsApiKey={apiKey} libraries={['places']}>
+                        <div className="controls">
+                            <div className="top-row">
+                                <span className="location-display">
+                                    <strong>Current location: </strong> {isLoadingLocation ? 'Loading...' : currentAddress}
+                                </span>
+                                <Autocomplete onLoad={(auto) => (autocompleteRef.current = auto)} onPlaceChanged={handlePlaceSelected}>
+                                    <input
+                                        type="text"
+                                        placeholder="Or enter location (e.g., FairPrice Tampines)"
+                                        className="manual-location-input"
+                                    />
+                                </Autocomplete>
+                            </div>
+
+                            {locationDenied && (
+                                <div className="location-denied">
+                                    ❗ Location access denied. Showing Orchard Road. To see nearby stores, please enable location access in your browser settings and refresh the page.
+                                </div>
+                            )}
+                        </div>
+                    </LoadScript>
                 </div>
-              )}
+
+                <div className="store-content">
+                    <div className="map-section">
+                        <LoadScript googleMapsApiKey={apiKey} libraries={['places']}>
+                            {userLocation && !isLoadingLocation && (
+                                <GoogleMap
+                                    key={`${userLocation.lat}-${userLocation.lng}`}
+                                    mapContainerStyle={mapContainerStyle}
+                                    center={userLocation}
+                                    zoom={15}
+                                    onLoad={handleMapLoad}
+                                >
+                                    <Marker position={userLocation} label="You" />
+                                    {places.map((place, i) => (
+                                    <Marker
+                                        key={i}
+                                        position={{
+                                            lat: place.geometry.location.lat(),
+                                            lng: place.geometry.location.lng(),
+                                        }}
+                                        onClick={() => {
+                                            setSelectedPlaceIndex(i);
+                                            scrollToCard(i);
+                                        }}
+                                        animation={selectedPlaceIndex === i ? window.google.maps.Animation.BOUNCE : undefined}
+                                    />
+                                    ))}
+                                </GoogleMap>
+                            )}
+                        </LoadScript>
+                    </div>
+
+                    <div className="list-section">
+                        {places.map((place, i) => (
+                            <div
+                                key={i}
+                                ref={(el) => (cardRefs.current[i] = el)}
+                                className={`store-card ${selectedPlaceIndex === i ? 'highlight' : ''}`}
+                                onClick={() => {
+                                    setSelectedPlaceIndex(i);
+                                    if (mapRef.current && place.geometry?.location) {
+                                        mapRef.current.panTo(place.geometry.location);
+                                    }
+                                }}
+                            >
+                                <strong>{place.name}</strong>
+                                <p>{place.vicinity}</p>
+                                <p>{place.opening_hours?.open_now ? 'Open Now' : 'Closed'}</p>
+                                <a
+                                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                                        place.name + ' ' + place.vicinity
+                                    )}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    View on Google Maps
+                                </a>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <button
+                    className="back-button"
+                    onClick={() => navigate(backPath, { state: { selectedIngredients, filteredRecipes } })}
+                >
+                    ← Back
+                </button>
             </div>
-          </LoadScript>
-        </div>
-
-        <div className="store-content">
-          <div className="map-section">
-            <LoadScript googleMapsApiKey={apiKey} libraries={['places']}>
-              {userLocation && !isLoadingLocation && (
-                <GoogleMap
-                  key={`${userLocation.lat}-${userLocation.lng}`}
-                  mapContainerStyle={mapContainerStyle}
-                  center={userLocation}
-                  zoom={15}
-                  onLoad={handleMapLoad}
-                >
-                  <Marker position={userLocation} label="You" />
-                  {places.map((place, i) => (
-                    <Marker
-                      key={i}
-                      position={{
-                        lat: place.geometry.location.lat(),
-                        lng: place.geometry.location.lng(),
-                      }}
-                      onClick={() => {
-                        setSelectedPlaceIndex(i);
-                        scrollToCard(i);
-                      }}
-                      animation={selectedPlaceIndex === i ? window.google.maps.Animation.BOUNCE : undefined}
-                    />
-                  ))}
-                </GoogleMap>
-              )}
-            </LoadScript>
-          </div>
-
-          <div className="list-section">
-            {places.map((place, i) => (
-              <div
-                key={i}
-                ref={(el) => (cardRefs.current[i] = el)}
-                className={`store-card ${selectedPlaceIndex === i ? 'highlight' : ''}`}
-                onClick={() => {
-                  setSelectedPlaceIndex(i);
-                  if (mapRef.current && place.geometry?.location) {
-                    mapRef.current.panTo(place.geometry.location);
-                  }
-                }}
-              >
-                <strong>{place.name}</strong>
-                <p>{place.vicinity}</p>
-                <p>{place.opening_hours?.open_now ? 'Open Now' : 'Closed'}</p>
-                <a
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                    place.name + ' ' + place.vicinity
-                  )}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  View on Google Maps
-                </a>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <button
-          className="back-button"
-          onClick={() => navigate(backPath, { state: { selectedIngredients, filteredRecipes } })}
-        >
-          ← Back
-        </button>
-      </div>
-    </>
-  );
+        </>
+    );
 }
 
 export default FindStores;

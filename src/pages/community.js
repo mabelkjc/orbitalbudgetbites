@@ -36,6 +36,36 @@ function CommunityPage() {
         fetchPosts();
     }, []);
 
+    useEffect(() => {
+        const savedCount = sessionStorage.getItem('visiblePosts');
+        const anchorPostId = sessionStorage.getItem('anchorPostId');
+
+        if (savedCount) {
+            setVisiblePosts(parseInt(savedCount));
+        }
+
+        if (anchorPostId) {
+            const scrollToAnchor = () => {
+                const element = document.getElementById(`post-${anchorPostId}`);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'auto', block: 'start' });
+                }
+            };
+            const timeout = setTimeout(scrollToAnchor, 150);
+            return () => clearTimeout(timeout);
+        }
+    }, []);
+
+    useEffect(() => {
+        const clearSession = () => {
+            sessionStorage.removeItem('visiblePosts');
+            sessionStorage.removeItem('scrollY');
+            sessionStorage.removeItem('anchorPostId');
+        };
+        window.addEventListener('beforeunload', clearSession);
+        return () => window.removeEventListener('beforeunload', clearSession);
+    }, []);
+
     const handleFileChange = (e) => {
         const file = e.target.files?.[0];
         if (!file) return;
@@ -121,7 +151,7 @@ function CommunityPage() {
                     <p className="no-posts-message">There are no posts found.</p>
                 ) : (
                     posts.slice(0, visiblePosts).map(post => (
-                        <PostCard key={post.id} post={post} />
+                        <PostCard key={post.id} post={post} visiblePosts={visiblePosts}/>
                     ))
                 )}
             </div>
