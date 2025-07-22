@@ -91,7 +91,7 @@ function CommunityPage() {
         }
 
         let username = '';
-        let profilePicture = '/default-profile.png';
+        let profilePicture = '/avatars/default-profile.png';
         try {
             const userRef = doc(db, 'users', user.uid);
             const userSnap = await getDoc(userRef);

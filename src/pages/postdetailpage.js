@@ -98,9 +98,13 @@ function PostDetailPage() {
                 <div className="post-header">
                     <div className="author-info">
                         <img
-                            src={post.profilePicture || '/default-profile.png'}
+                            src={post.profilePicture || '/avatars/default-profile.png'}
                             alt="profile"
                             className="author-image"
+                            onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = '/avatars/default-profile.png';
+                            }}
                         />
                         <div>
                             <p className="author">{post.username}</p>
