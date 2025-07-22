@@ -89,16 +89,27 @@ function ProfilePage() {
                 <div className="profile-header">
                     <div className="profile-picture-wrapper">
                         <img
-                            src={userData.profilePicture || '/default-profile.png'}
+                            src={
+                                userData.profilePicture && userData.profilePicture.startsWith('/avatars/')
+                                    ? userData.profilePicture
+                                    : '/avatars/default-profile.png'}
                             alt="Profile"
                             className="profile-picture"
+                            onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = '/avatars/default-profile.png';
+                            }}
                         />
                         <div className="edit-pic-wrapper">
                             <label className="edit-label" onClick={() => setShowAvatars(!showAvatars)}>Edit Avatar</label>
                             {showAvatars && (
                                 <div className="avatar-selection">
-                                    {['tacos.png', 'boba.png', 'onigiri.png', 'silly.png'].map(filename => {
-                                        const avatarPath = `/${filename}`;
+                                    {['tacos.png', 'boba.png', 'onigiri.png', 'buns.png',
+                                    'donut.png', 'egg.png', 'hamburger.png', 'healthy-food.png',
+                                    'pizza.png', 'spaghetti.png', 'ape.png', 'bear.png',
+                                    'joyful.png', 'silly.png', 'profile.png'
+                                    ].map(filename => {
+                                        const avatarPath = `/avatars/${filename}`;
                                         return (
                                             <img
                                                 key={filename}

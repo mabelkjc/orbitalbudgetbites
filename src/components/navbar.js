@@ -10,7 +10,7 @@ function Navbar() {
     const navigate = useNavigate();
     const [dropdownVisible, setDropdownVisible] = useState(false);
     const [user] = useAuthState(auth);
-    const [profilePic, setProfilePic] = useState('/default-profile.png');
+    const [profilePic, setProfilePic] = useState('/avatars/default-profile.png');
 
     const handleLogout = async () => {
         try {
@@ -55,7 +55,14 @@ function Navbar() {
                 <img src="/budgetbitesfinal.png" alt="Budget Bites Logo" />
             </Link>
             <div className="profile-menu">
-                <img src={profilePic} alt="User Avatar" className="user-icon" />
+                <img src={profilePic}
+                alt="User Avatar"
+                className="user-icon"
+                onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = '/avatars/default-profile.png';
+                }}
+                />
                 <button className="dropbtn" onClick={() => setDropdownVisible(!dropdownVisible)}>▼</button>
                 {dropdownVisible && (
                 <div className="dropdown-content">
