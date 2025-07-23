@@ -16,17 +16,31 @@ function CommunityPage() {
     const [loadingPosts, setLoadingPosts] = useState(true);
     const [user] = useAuthState(auth);
     const [visiblePosts, setVisiblePosts] = useState(6);
+    const [sortBy, setSortBy] = useState(() => localStorage.getItem('communitySortBy') || 'Newest');
+    const [dropdownVisible, setDropdownVisible] = useState(false);
 
     useEffect(() => {
         const fetchPosts = async () => {
             try {
                 const q = query(collection(db, 'communityPosts'), orderBy('createdAt', 'desc'));
                 const querySnapshot = await getDocs(q);
-                const postsArray = querySnapshot.docs.map(doc => ({
+                let postsArray = querySnapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data(),
                 }));
-                setPosts(postsArray);
+
+                const sorted = [...postsArray];
+                if (sortBy === 'Newest') {
+                    sorted.sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds);
+                } else if (sortBy === 'Oldest') {
+                    sorted.sort((a, b) => a.createdAt?.seconds - b.createdAt?.seconds);
+                } else if (sortBy === 'Most Likes') {
+                    sorted.sort((a, b) => (b.likes?.length || 0) - (a.likes?.length || 0));
+                } else if (sortBy === 'Most Comments') {
+                    sorted.sort((a, b) => (b.comments?.length || 0) - (a.comments?.length || 0));
+                }
+
+                setPosts(sorted);
             } catch (error) {
                 console.error('Failed to load posts:', error);
             } finally {
@@ -34,7 +48,7 @@ function CommunityPage() {
             }
         };
         fetchPosts();
-    }, []);
+    }, [sortBy]);
 
     useEffect(() => {
         const savedCount = sessionStorage.getItem('visiblePosts');
@@ -65,6 +79,12 @@ function CommunityPage() {
         window.addEventListener('beforeunload', clearSession);
         return () => window.removeEventListener('beforeunload', clearSession);
     }, []);
+
+    const handleSortChange = (value) => {
+        setSortBy(value);
+        localStorage.setItem('communitySortBy', value);
+        setDropdownVisible(false);
+    };
 
     const handleFileChange = (e) => {
         const file = e.target.files?.[0];
@@ -135,7 +155,6 @@ function CommunityPage() {
             alert('Failed to save post.');
         }
 
-        console.log('Image uploaded to:', imageUrl); // to remove
     };
 
     if (loadingPosts) return <div>Loading...</div>;
@@ -145,6 +164,21 @@ function CommunityPage() {
         <Navbar />
         <div className="community-container">
             <h2 className="community-header">Community</h2>
+
+            <div className="community-sort-wrapper">
+                <span className="sort-label">Sort by:</span>
+                <button className="drop-btn" onClick={() => setDropdownVisible(!dropdownVisible)}>
+                    {sortBy} ▼
+                </button>
+                {dropdownVisible && (
+                    <div className="dropdown-content">
+                        <button onClick={() => handleSortChange('Newest')}>Newest</button>
+                        <button onClick={() => handleSortChange('Oldest')}>Oldest</button>
+                        <button onClick={() => handleSortChange('Most Likes')}>Most Likes</button>
+                        <button onClick={() => handleSortChange('Most Comments')}>Most Comments</button>
+                    </div>
+                )}
+            </div>
 
             <div className="post-grid">
                 {posts.length === 0 ? (
