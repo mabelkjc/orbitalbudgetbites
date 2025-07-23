@@ -1,4 +1,4 @@
-import axios from 'axios';
+const axios = require('axios');
 
 const uploadToCloudinary = async (file) => {
     const formData = new FormData();
