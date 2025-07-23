@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { doc, getDoc, updateDoc, arrayUnion, deleteDoc } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
@@ -141,7 +141,7 @@ function PostDetailPage() {
                             }}
                         />
                         <div>
-                            <p className="author">{post.username}</p>
+                            <Link to={`/profile/${post.userId}`} className="author">{post.username}</Link>
                             <p className="timestamp">{formattedDate}</p>
                         </div>
                     </div>
@@ -187,7 +187,9 @@ function PostDetailPage() {
                         {(post.comments || []).map((c, i) => (
                             <div key={i} className="comment-card">
                                 <div className="comment-header">
-                                    <strong>{c.username}</strong>
+                                    <Link to={`/profile/${c.userId}`} className="comment-author">
+                                        {c.username}
+                                    </Link>
                                     {user?.uid === c.userId && (
                                         <button className="delete-comment-button" onClick={() => handleDeleteComment(c.createdAt)}>🗑️ Delete</button>
                                     )}
