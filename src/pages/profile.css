@@ -93,6 +93,33 @@
     border-color: #16612C;
 }
 
+.follow-row {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.follow-button {
+    margin-top: 0.5rem;
+    padding: 0.4rem 1rem;
+    border: none;
+    background-color: #16612C;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.follow-button:hover {
+    background-color: #2e7d32;
+}
+
+.follow-counts {
+    margin-top: 1.2rem;
+    font-size: 15px;
+    color: #444;
+}
+
 .profile-info h2 {
     margin-bottom: 1rem;
 }
