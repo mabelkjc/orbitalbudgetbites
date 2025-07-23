@@ -8,7 +8,7 @@ const PostCard = ({ post, visiblePosts }) => {
     const handleClick = () => {
         sessionStorage.setItem('scrollY', window.scrollY.toString());
         sessionStorage.setItem('anchorPostId', post.id);
-        sessionStorage.setItem('visiblePosts', visiblePosts.toString());
+        sessionStorage.setItem('visiblePosts', (visiblePosts || 0).toString());
         navigate(`/post/${post.id}`);
     };
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { auth, db } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { doc, getDoc, setDoc, collection, getDocs, query, where } from 'firebase/firestore';
@@ -12,24 +12,41 @@ function ProfilePage() {
     const [userData, setUserData] = useState(null);
     const navigate = useNavigate();
     const [user, loadingAuth] = useAuthState(auth);
+    const [followers, setFollowers] = useState([]);
+    const [following, setFollowing] = useState([]);
+    const [isFollowing, setIsFollowing] = useState(false);
     const [savedRecipes, setSavedRecipes] = useState([]);
     const [ratedRecipes, setRatedRecipes] = useState([]);
     const [showAvatars, setShowAvatars] = useState(false);
     const [likedPosts, setLikedPosts] = useState([]);
     const [createdPosts, setCreatedPosts] = useState([]);
+    const { userId } = useParams();
+    const isMyProfile = !userId || user?.uid === userId;
 
     useEffect(() => {
         const fetchData = async () => {
-            if (!loadingAuth && user) {
-                const ref = doc(db, 'users', user.uid);
+            if (!loadingAuth && (user || userId)) {
+                const ref = doc(db, 'users', userId || user.uid);
                 const docSnap = await getDoc(ref);
                 if (docSnap.exists()) {
                     setUserData(docSnap.data());
                 }
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    setUserData(data);
+
+                    setFollowers(data.followers || []);
+                    setFollowing(data.following || []);
+                    
+                    if (!isMyProfile && user) {
+                        setIsFollowing(data.followers?.includes(user.uid));
+                    }
+                }
             }
+            
         };
         fetchData();
-    }, [user, loadingAuth]);
+    }, [user, loadingAuth, userId, isMyProfile]);
 
     useEffect(() => {
         const fetchSavedRecipes = async () => {
@@ -66,15 +83,50 @@ function ProfilePage() {
             if (!loadingAuth && user) {
                 const postsRef = collection(db, 'communityPosts');
                 const snapshot = await getDocs(postsRef);
+                const targetUid = userId || user?.uid;
                 const allPosts = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-                setLikedPosts(allPosts.filter(p => Array.isArray(p.likes) && p.likes.includes(user.uid)));
-                setCreatedPosts(allPosts.filter(p => p.userId === user.uid));
+                setLikedPosts(allPosts.filter(p => Array.isArray(p.likes) && p.likes.includes(targetUid)));
+                setCreatedPosts(allPosts.filter(p => p.userId === targetUid));
             }
         };
 
         fetchCommunityPosts();
-    }, [user, loadingAuth]);
+    }, [user, loadingAuth, userId]);
+
+    const handleFollowToggle = async () => {
+        if (!user || !userId) return;
+
+        const myRef = doc(db, 'users', user.uid);
+        const theirRef = doc(db, 'users', userId);
+
+        const mySnap = await getDoc(myRef);
+        const theirSnap = await getDoc(theirRef);
+
+        if (!mySnap.exists() || !theirSnap.exists()) return;
+
+        const myData = mySnap.data();
+        const theirData = theirSnap.data();
+
+        const isCurrentlyFollowing = theirData.followers?.includes(user.uid);
+
+        const updatedMyFollowing = isCurrentlyFollowing
+            ? (myData.following || []).filter(uid => uid !== userId)
+            : [...(myData.following || []), userId];
+
+        const updatedTheirFollowers = isCurrentlyFollowing
+            ? (theirData.followers || []).filter(uid => uid !== user.uid)
+            : [...(theirData.followers || []), user.uid];
+
+        await setDoc(myRef, { following: updatedMyFollowing }, { merge: true });
+        await setDoc(theirRef, { followers: updatedTheirFollowers }, { merge: true });
+
+        setIsFollowing(!isCurrentlyFollowing);
+        setFollowers(updatedTheirFollowers);
+        if (isMyProfile) {
+            setFollowing(updatedMyFollowing);
+        }
+    };
 
     const handleEditPreferences = () => {
         navigate('/profile/preferences', { state: { from: 'profile' } });
@@ -101,38 +153,56 @@ function ProfilePage() {
                             }}
                         />
                         <div className="edit-pic-wrapper">
-                            <label className="edit-label" onClick={() => setShowAvatars(!showAvatars)}>Edit Avatar</label>
-                            {showAvatars && (
-                                <div className="avatar-selection">
-                                    {['tacos.png', 'boba.png', 'onigiri.png', 'buns.png',
-                                    'donut.png', 'egg.png', 'hamburger.png', 'healthy-food.png',
-                                    'pizza.png', 'spaghetti.png', 'ape.png', 'bear.png',
-                                    'joyful.png', 'silly.png', 'profile.png'
-                                    ].map(filename => {
-                                        const avatarPath = `/avatars/${filename}`;
-                                        return (
-                                            <img
-                                                key={filename}
-                                                src={avatarPath}
-                                                alt={filename}
-                                                className={`avatar-option ${userData.profilePicture === avatarPath ? 'selected' : ''}`}
-                                                onClick={async () => {
-                                                    await setDoc(doc(db, 'users', user.uid), {
-                                                        profilePicture: avatarPath
-                                                    }, { merge: true });
-                                                    setUserData(prev => ({ ...prev, profilePicture: avatarPath }));
-                                                    setShowAvatars(false);
-                                                }}
-                                            />
-                                        );
-                                    })}
-                                </div>
+                            {isMyProfile && (
+                                <>
+                                    <label className="edit-label" onClick={() => setShowAvatars(!showAvatars)}>
+                                        Edit Avatar
+                                    </label>
+                                    {showAvatars && (
+                                        <div className="avatar-selection">
+                                            {['tacos.png', 'boba.png', 'onigiri.png', 'buns.png',
+                                            'donut.png', 'egg.png', 'hamburger.png', 'healthy-food.png',
+                                            'pizza.png', 'spaghetti.png', 'ape.png', 'bear.png',
+                                            'joyful.png', 'silly.png', 'profile.png'
+                                            ].map(filename => {
+                                                const avatarPath = `/avatars/${filename}`;
+                                                return (
+                                                    <img
+                                                        key={filename}
+                                                        src={avatarPath}
+                                                        alt={filename}
+                                                        className={`avatar-option ${userData.profilePicture === avatarPath ? 'selected' : ''}`}
+                                                        onClick={async () => {
+                                                            await setDoc(doc(db, 'users', user.uid), {
+                                                                profilePicture: avatarPath
+                                                            }, { merge: true });
+                                                            setUserData(prev => ({ ...prev, profilePicture: avatarPath }));
+                                                            setShowAvatars(false);
+                                                        }}
+                                                    />
+                                                );
+                                            })}
+                                        </div>
+                                    )}
+                                </>
                             )}
                         </div>
                     </div>
 
                     <div className="profile-info">
                         <h2>{userData.username || 'User'}</h2>
+                        <div className="follow-row">
+                            <p className="follow-counts">
+                                <strong>{followers.length}</strong> Followers &nbsp;|&nbsp;
+                                <strong>{following.length}</strong> Following
+                            </p>
+                            {!isMyProfile && user && (
+                                <button className="follow-button" onClick={handleFollowToggle}>
+                                    {isFollowing ? 'Unfollow' : 'Follow'}
+                                </button>
+                            )}
+                        </div>
+                        
                         <div className="tags-section">
                             <p><strong>My Dietary Preferences & Restrictions:</strong></p>
                             <div className="tag-row">
@@ -149,7 +219,9 @@ function ProfilePage() {
                             </div>
                         </div>
 
-                        <button className="editpref-button" onClick={handleEditPreferences}>Edit Preferences</button>
+                        {isMyProfile && (
+                            <button className="editpref-button" onClick={handleEditPreferences}>Edit Preferences</button>
+                        )}
                     </div>
                 </div>
 
@@ -165,7 +237,7 @@ function ProfilePage() {
                                 ))}
                             </div>
                         ) : (
-                            <p>You haven't saved any recipes yet.</p>
+                            <p>No recipes saved yet.</p>
                         )}
                     </div>
 
@@ -178,7 +250,7 @@ function ProfilePage() {
                                 ))}
                             </div>
                         ) : (
-                            <p>You haven't rated any recipes yet.</p>
+                            <p>No recipes rated yet.</p>
                         )}
                     </div>
                 </div>
@@ -191,11 +263,11 @@ function ProfilePage() {
                         {likedPosts.length > 0 ? (
                             <div className="card-row posts">
                                 {likedPosts.map(post => (
-                                    <PostCard key={post.id} post={post} />
+                                    <PostCard key={post.id} post={post} visiblePosts={0} />
                                 ))}
                             </div>
                         ) : (
-                            <p>You haven't liked any posts yet.</p>
+                            <p>No posts liked yet.</p>
                         )}
                     </div>
 
@@ -204,11 +276,11 @@ function ProfilePage() {
                         {createdPosts.length > 0 ? (
                             <div className="card-row posts">
                                 {createdPosts.map(post => (
-                                    <PostCard key={post.id} post={post} />
+                                    <PostCard key={post.id} post={post} visiblePosts={0} />
                                 ))}
                             </div>
                         ) : (
-                            <p>You haven't created any posts yet.</p>
+                            <p>No posts created yet.</p>
                         )}
                     </div>
                 </div>

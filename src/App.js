@@ -22,6 +22,7 @@ function App() {
                     <Route path="/preferences" element={<Main />} />
                     <Route path="/profile" element={<ProfilePage />} />
                     <Route path="/profile/preferences" element={<Main />} />
+                    <Route path="/profile/:userId" element={<ProfilePage />} />
                     <Route path="/community" element={<CommunityPage />} />
                     <Route path="/post/:postId" element={<PostDetailPage />} />
                     <Route path="/home" element={<HomePage />} />

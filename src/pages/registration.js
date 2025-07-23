@@ -22,7 +22,9 @@ function Registration() {
                 username: username,
                 dietaryPreferences: [],
                 allergies: [],
-                restrictions: []
+                restrictions: [],
+                followers: [],
+                following: []
             });
 
             alert("Registered successfully!");
