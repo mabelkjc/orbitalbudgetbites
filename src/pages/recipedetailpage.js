@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useLocation, useNavigate } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router';
 import {
   doc, getDoc, collection, getDocs, addDoc, serverTimestamp,
   query, orderBy, setDoc
