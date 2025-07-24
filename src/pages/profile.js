@@ -15,6 +15,10 @@ function ProfilePage() {
     const [followers, setFollowers] = useState([]);
     const [following, setFollowing] = useState([]);
     const [isFollowing, setIsFollowing] = useState(false);
+    const [showFollowerModal, setShowFollowerModal] = useState(false);
+    const [showFollowingModal, setShowFollowingModal] = useState(false);
+    const [followerUsers, setFollowerUsers] = useState([]);
+    const [followingUsers, setFollowingUsers] = useState([]);
     const [savedRecipes, setSavedRecipes] = useState([]);
     const [ratedRecipes, setRatedRecipes] = useState([]);
     const [showAvatars, setShowAvatars] = useState(false);
@@ -128,6 +132,45 @@ function ProfilePage() {
         }
     };
 
+    const fetchUsernames = async (uids) => {
+        if (uids.length === 0) return [];
+
+        const usersRef = collection(db, 'users');
+        const chunks = [];
+
+        for (let i = 0; i < uids.length; i += 10) {
+            chunks.push(uids.slice(i, i + 10));
+        }
+
+        const promises = chunks.map(chunk => {
+            const q = query(usersRef, where('__name__', 'in', chunk));
+            return getDocs(q);
+        });
+
+        const snapshots = await Promise.all(promises);
+        const allUsers = [];
+
+        snapshots.forEach(snapshot => {
+            snapshot.forEach(doc => {
+                allUsers.push({ uid: doc.id, username: doc.data().username || 'Unnamed' });
+            });
+        });
+
+        return allUsers;
+    };
+
+    const openFollowerModal = async () => {
+        const users = await fetchUsernames(followers);
+        setFollowerUsers(users);
+        setShowFollowerModal(true);
+    };
+
+    const openFollowingModal = async () => {
+        const users = await fetchUsernames(following);
+        setFollowingUsers(users);
+        setShowFollowingModal(true);
+    };
+
     const handleEditPreferences = () => {
         navigate('/profile/preferences', { state: { from: 'profile' } });
     };
@@ -193,8 +236,12 @@ function ProfilePage() {
                         <h2>{userData.username || 'User'}</h2>
                         <div className="follow-row">
                             <p className="follow-counts">
-                                <strong>{followers.length}</strong> Followers &nbsp;|&nbsp;
-                                <strong>{following.length}</strong> Following
+                                <strong className="clickable" onClick={openFollowerModal}>
+                                    {followers.length}
+                                </strong> Followers &nbsp;|&nbsp;
+                                <strong className="clickable" onClick={openFollowingModal}>
+                                    {following.length}
+                                </strong> Following
                             </p>
                             {!isMyProfile && user && (
                                 <button className="follow-button" onClick={handleFollowToggle}>
@@ -284,6 +331,57 @@ function ProfilePage() {
                         )}
                     </div>
                 </div>
+                {showFollowerModal && (
+                    <div className="modal-backdrop" onClick={() => setShowFollowerModal(false)}>
+                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <h3>Followers</h3>
+                        {followerUsers.length > 0 ? (
+                            <ul>
+                                {followerUsers.map((user, i) => (
+                                <li
+                                    key={i}
+                                    className="clickable"
+                                    onClick={() => {
+                                        setShowFollowerModal(false);
+                                        navigate(`/profile/${user.uid}`);
+                                    }}
+                                >
+                                    {user.username}
+                                </li>
+                                ))}
+                            </ul>
+                            ) : (
+                            <p>No followers yet.</p>
+                        )}
+                        </div>
+                    </div>
+                )}
+
+                {showFollowingModal && (
+                    <div className="modal-backdrop" onClick={() => setShowFollowingModal(false)}>
+                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                        <h3>Following</h3>
+                        {followingUsers.length > 0 ? (
+                            <ul>
+                                {followingUsers.map((user, i) => (
+                                <li
+                                    key={i}
+                                    className="clickable"
+                                    onClick={() => {
+                                        setShowFollowingModal(false);
+                                        navigate(`/profile/${user.uid}`);
+                                    }}
+                                >
+                                    {user.username}
+                                </li>
+                                ))}
+                            </ul>
+                            ) : (
+                            <p>Not following anyone yet.</p>
+                        )}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
