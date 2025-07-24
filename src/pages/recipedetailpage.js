@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useLocation, useNavigate } from 'react-router';
+import { useParams, useLocation, useNavigate, Link } from 'react-router';
 import {
   doc, getDoc, collection, getDocs, addDoc, serverTimestamp,
   query, orderBy, setDoc
@@ -296,13 +296,15 @@ function RecipeDetail() {
                         {reviews.map((r, i) => (
                             <div key={i} className="review-item">
                                 <div className="review-header">
-                                <strong>{r.username}</strong>
-                                {r.timestamp && (
-                                    <div className="review-time">
-                                        {new Date(r.timestamp).toLocaleDateString()} {new Date(r.timestamp).toLocaleTimeString()}
-                                    </div>
-                                )}
-                                <div className="review-stars">{renderStars(r.rating)}</div>
+                                    <Link to={`/profile/${r.userId}`} className="review-author">
+                                        {r.username}
+                                    </Link>
+                                    {r.timestamp && (
+                                        <div className="review-time">
+                                            {new Date(r.timestamp).toLocaleDateString()} {new Date(r.timestamp).toLocaleTimeString()}
+                                        </div>
+                                    )}
+                                    <div className="review-stars">{renderStars(r.rating)}</div>
                                 </div>
                                 <p>{r.comment}</p>
                             </div>

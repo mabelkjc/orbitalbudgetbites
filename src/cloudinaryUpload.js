@@ -4,7 +4,6 @@ const uploadToCloudinary = async (file) => {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('upload_preset', 'web_bb_uploads');
-    formData.append('cloud_name', 'dgab2ofda');
 
     try {
         const response = await axios.post(

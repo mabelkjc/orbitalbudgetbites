@@ -2,10 +2,13 @@ import React from 'react';
 import { useNavigate } from 'react-router';
 import './postcard.css';
 
-const PostCard = ({ post }) => {
+const PostCard = ({ post, visiblePosts }) => {
     const navigate = useNavigate();
 
     const handleClick = () => {
+        sessionStorage.setItem('scrollY', window.scrollY.toString());
+        sessionStorage.setItem('anchorPostId', post.id);
+        sessionStorage.setItem('visiblePosts', (visiblePosts || 0).toString());
         navigate(`/post/${post.id}`);
     };
 
@@ -17,7 +20,7 @@ const PostCard = ({ post }) => {
     const commentCount = Array.isArray(post.comments) ? post.comments.length : 0;
 
     return (
-        <div className="post-card-link" onClick={handleClick}>
+        <div className="post-card-link" id={`post-${post.id}`} onClick={handleClick}>
             <div className="post-card">
                 <img
                     className="post-card-image"
@@ -30,7 +33,7 @@ const PostCard = ({ post }) => {
                 />
                 <div className="post-card-content">
                     <div className="post-card-header">
-                        <div className="post-card-caption">{post.caption}</div>
+                        <div className="post-card-caption" title={post.caption}>{post.caption}</div>
                         <div className="post-card-author">{post.username}</div>
                     </div>
                     <div className="post-card-footer">
