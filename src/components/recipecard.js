@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { doc, collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 import './recipecard.css';
