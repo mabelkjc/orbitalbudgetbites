@@ -18,6 +18,9 @@ function CommunityPage() {
     const [visiblePosts, setVisiblePosts] = useState(6);
     const [sortBy, setSortBy] = useState(() => localStorage.getItem('communitySortBy') || 'Newest');
     const [dropdownVisible, setDropdownVisible] = useState(false);
+    const [showFollowingOnly, setShowFollowingOnly] = useState(() => {
+        return localStorage.getItem('showFollowingOnly') === 'true';
+    });
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -28,6 +31,20 @@ function CommunityPage() {
                     id: doc.id,
                     ...doc.data(),
                 }));
+
+                if (showFollowingOnly && user) {
+                    const userRef = doc(db, 'users', user.uid);
+                    const userSnap = await getDoc(userRef);
+                    if (userSnap.exists()) {
+                        const followingList = userSnap.data().following || [];
+                        const followingUids = followingList.map(f =>
+                            typeof f === 'object' ? f.uid : f
+                        );
+                        postsArray = postsArray.filter(post =>
+                            followingUids.includes(post.userId)
+                        );
+                    }
+                }
 
                 const sorted = [...postsArray];
                 if (sortBy === 'Newest') {
@@ -48,7 +65,7 @@ function CommunityPage() {
             }
         };
         fetchPosts();
-    }, [sortBy]);
+    }, [sortBy, showFollowingOnly, user]);
 
     useEffect(() => {
         const savedCount = sessionStorage.getItem('visiblePosts');
@@ -79,6 +96,12 @@ function CommunityPage() {
         window.addEventListener('beforeunload', clearSession);
         return () => window.removeEventListener('beforeunload', clearSession);
     }, []);
+
+    const handleToggleFollowing = (e) => {
+        const value = e.target.checked;
+        setShowFollowingOnly(value);
+        localStorage.setItem('showFollowingOnly', value);
+    };
 
     const handleSortChange = (value) => {
         setSortBy(value);
@@ -178,6 +201,16 @@ function CommunityPage() {
                         <button onClick={() => handleSortChange('Most Comments')}>Most Comments</button>
                     </div>
                 )}
+            </div>
+            <div className="community-toggle-wrapper">
+                <label>
+                    <input
+                        type="checkbox"
+                        checked={showFollowingOnly}
+                        onChange={handleToggleFollowing}
+                    />
+                    &nbsp;Only show posts from users I follow
+                </label>
             </div>
 
             <div className="post-grid">
