@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useLocation, useNavigate, Link } from 'react-router';
+import { useParams, useLocation, useNavigate, Link } from 'react-router-dom';
 import {
   doc, getDoc, collection, getDocs, addDoc, serverTimestamp,
   query, orderBy, setDoc
@@ -278,8 +278,9 @@ function RecipeDetail() {
                         onChange={(e) => setNewRating(parseInt(e.target.value))}
                         required
                     />
-                    <label>Comment:</label>
+                    <label htmlFor="review-comment">Comment:</label>
                     <textarea
+                        id="review-comment"
                         value={newComment}
                         onChange={(e) => setNewComment(e.target.value)}
                         rows="4"
