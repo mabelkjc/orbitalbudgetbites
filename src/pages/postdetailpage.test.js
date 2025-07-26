@@ -4,7 +4,6 @@ import PostDetailPage from './postdetailpage';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { updateDoc, deleteDoc } from 'firebase/firestore';
 
-jest.mock('../firebase');
 jest.mock('react-firebase-hooks/auth', () => ({
   useAuthState: () => [{ uid: 'mockUserId' }, false, null],
 }));

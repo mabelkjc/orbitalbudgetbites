@@ -20,6 +20,7 @@ export const getDoc = jest.fn().mockResolvedValue({
     profilePicture: '/avatars/default-profile.png',
   }),
 });
+export const setDoc = jest.fn();
 export const updateDoc = jest.fn();
 export const deleteDoc = jest.fn();
 export const arrayUnion = jest.fn(comment => comment);
