@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
@@ -38,14 +38,14 @@ function Registration() {
         <div className="registration">
             <form className="registration-form" onSubmit={handleSubmit}>
                 <h1>Registration</h1>
-                <label>Username</label>
-                <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
+                <label htmlFor="username">Username</label>
+                <input id="username" type="text" value={username} onChange={(e) => setUsername(e.target.value)} required />
 
-                <label>Email</label>
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                <label htmlFor="email">Email</label>
+                <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
 
-                <label>Password</label>
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                <label htmlFor="password">Password</label>
+                <input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
 
                 <button type="submit" className="submitInfo">Register</button>
             </form>
