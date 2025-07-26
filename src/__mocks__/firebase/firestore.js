@@ -1,6 +1,7 @@
 export const doc = (...segments) => ({
-    _key: { path: { segments } },
-});
+    id: segments[segments.length - 1],
+    _path: { segments, } }
+);
 export const getDoc = jest.fn().mockResolvedValue({
     exists: () => true,
     data: () => ({
@@ -27,7 +28,21 @@ export const updateDoc = jest.fn();
 export const deleteDoc = jest.fn();
 export const arrayUnion = jest.fn(comment => comment);
 export const getDocs = jest.fn().mockResolvedValue({ docs: [] });
-export const collection = jest.fn();
+export const collection = (db, ...segments) => {
+    if (typeof db === 'object' && db._path?.segments) {
+        return {
+            _path: {
+                segments: [...db._path.segments, ...segments],
+            },
+        };
+    }
+
+    return {
+        _path: {
+            segments,
+        },
+    };
+};
 export const query = jest.fn();
 export const where = jest.fn();
 export const addDoc = jest.fn();
