@@ -9,282 +9,280 @@ jest.mock('../firebase');
 jest.mock('firebase/firestore');
 
 describe('MainPage', () => {
-    const mockUser = { uid: 'test-uid' };
+    const mockUser = { uid: 'mockUserId' };
 
-  beforeEach(() => {
-    auth.currentUser = mockUser;
-    jest.clearAllMocks();
-  });
-
-  const renderWithRouter = (ui, { route = '/' } = {}) => {
-    window.history.pushState({}, 'Test page', route);
-    return render(
-      <MemoryRouter initialEntries={[route]}>
-        {ui}
-      </MemoryRouter>
-    );
-  };
-
-  test('displays loading state initially', async () => {
-    getDoc.mockResolvedValueOnce({ exists: () => false });
-    renderWithRouter(<MainPage />);
-    expect(screen.getByText(/loading/i)).toBeInTheDocument();
-    await waitFor(() => expect(getDoc).toHaveBeenCalled());
-  });
-
-  test('renders with Firestore user data', async () => {
-    getDoc.mockResolvedValueOnce({
-      exists: () => true,
-      data: () => ({
-        username: 'mockUser',
-        dietaryPreferences: ['Vegan'],
-        allergies: ['Dairy'],
-        restrictions: ['Low-sugar'],
-      }),
+    beforeEach(() => {
+        auth.currentUser = mockUser;
+        jest.clearAllMocks();
     });
 
-    renderWithRouter(<MainPage />);
-    await waitFor(() => expect(screen.getByText('Welcome, mockUser')).toBeInTheDocument());
+    const renderWithRouter = (ui, { route = '/' } = {}) => {
+        window.history.pushState({}, 'Test page', route);
+        return render(
+            <MemoryRouter initialEntries={[route]}>
+                {ui}
+            </MemoryRouter>
+        );
+    };
 
-    expect(screen.getByLabelText('Vegan')).toBeChecked();
-    expect(screen.getByLabelText('Dairy')).toBeChecked();
-    expect(screen.getByLabelText('Low-sugar')).toBeChecked();
-  });
-
-  test('toggles individual checkboxes', async () => {
-    getDoc.mockResolvedValueOnce({
-      exists: () => true,
-      data: () => ({
-        username: 'mockUser',
-        dietaryPreferences: [],
-        allergies: [],
-        restrictions: [],
-      }),
+    test('displays loading state initially', async () => {
+        getDoc.mockResolvedValueOnce({ exists: () => false });
+        renderWithRouter(<MainPage />);
+        expect(screen.getByText(/loading/i)).toBeInTheDocument();
+        await waitFor(() => expect(getDoc).toHaveBeenCalled());
     });
 
-    renderWithRouter(<MainPage />);
-    await waitFor(() => screen.getByText('Welcome, mockUser'));
+    test('renders with Firestore user data', async () => {
+        getDoc.mockResolvedValueOnce({
+            exists: () => true,
+            data: () => ({
+                username: 'mockUser',
+                dietaryPreferences: ['Vegan'],
+                allergies: ['Dairy'],
+                restrictions: ['Low-sugar'],
+            }),
+        });
 
-    const ketoCheckbox = screen.getByLabelText('Keto');
-    fireEvent.click(ketoCheckbox);
-    expect(ketoCheckbox).toBeChecked();
-  });
+        renderWithRouter(<MainPage />);
+        await waitFor(() => expect(screen.getByText('Welcome, mockUser')).toBeInTheDocument());
 
-  test('selecting "None" unchecks all other dietary pref options', async () => {
-    getDoc.mockResolvedValueOnce({
-      exists: () => true,
-      data: () => ({
-        username: 'mockUser',
-        dietaryPreferences: ['Vegan', 'Keto'],
-        allergies: [],
-        restrictions: [],
-      }),
+        expect(screen.getByLabelText('Vegan')).toBeChecked();
+        expect(screen.getByLabelText('Dairy')).toBeChecked();
+        expect(screen.getByLabelText('Low-sugar')).toBeChecked();
     });
 
-    renderWithRouter(<MainPage />);
-    await waitFor(() => screen.getByText('Welcome, mockUser'));
+    test('toggles individual checkboxes', async () => {
+        getDoc.mockResolvedValueOnce({
+            exists: () => true,
+            data: () => ({
+                username: 'mockUser',
+                dietaryPreferences: [],
+                allergies: [],
+                restrictions: [],
+            }),
+        });
 
-    const veganCheckbox = screen.getByLabelText('Vegan');
-    const ketoCheckbox = screen.getByLabelText('Keto');
-    const noneCheckbox = screen.getAllByLabelText('None')[0];
+        renderWithRouter(<MainPage />);
+        await waitFor(() => screen.getByText('Welcome, mockUser'));
 
-    expect(veganCheckbox).toBeChecked();
-    expect(ketoCheckbox).toBeChecked();
-
-    fireEvent.click(noneCheckbox);
-
-    expect(noneCheckbox).toBeChecked();
-    expect(veganCheckbox).not.toBeChecked();
-    expect(ketoCheckbox).not.toBeChecked();
-  });
-
-  test('selecting a dietary pref option unchecks "None"', async () => {
-    getDoc.mockResolvedValueOnce({
-      exists: () => true,
-      data: () => ({
-        username: 'mockUser',
-        dietaryPreferences: ['None'],
-        allergies: [],
-        restrictions: [],
-      }),
+        const ketoCheckbox = screen.getByLabelText('Keto');
+        fireEvent.click(ketoCheckbox);
+        expect(ketoCheckbox).toBeChecked();
     });
 
-    renderWithRouter(<MainPage />);
-    await waitFor(() => screen.getByText('Welcome, mockUser'));
+    test('selecting "None" unchecks all other dietary pref options', async () => {
+        getDoc.mockResolvedValueOnce({
+            exists: () => true,
+            data: () => ({
+                username: 'mockUser',
+                dietaryPreferences: ['Vegan', 'Keto'],
+                allergies: [],
+                restrictions: [],
+            }),
+        });
 
-    const noneCheckbox = screen.getAllByLabelText('None')[0];
-    const halalCheckbox = screen.getByLabelText('Halal');
+        renderWithRouter(<MainPage />);
+        await waitFor(() => screen.getByText('Welcome, mockUser'));
 
-    expect(noneCheckbox).toBeChecked();
+        const veganCheckbox = screen.getByLabelText('Vegan');
+        const ketoCheckbox = screen.getByLabelText('Keto');
+        const noneCheckbox = screen.getAllByLabelText('None')[0];
 
-    fireEvent.click(halalCheckbox);
+        expect(veganCheckbox).toBeChecked();
+        expect(ketoCheckbox).toBeChecked();
 
-    expect(noneCheckbox).not.toBeChecked();
-    expect(halalCheckbox).toBeChecked();
-  });
+        fireEvent.click(noneCheckbox);
 
-  test('alerts if any section is unselected on save', async () => {
-    getDoc.mockResolvedValueOnce({
-      exists: () => true,
-      data: () => ({
-        username: 'mockUser',
-        dietaryPreferences: [],
-        allergies: [],
-        restrictions: [],
-      }),
+        expect(noneCheckbox).toBeChecked();
+        expect(veganCheckbox).not.toBeChecked();
+        expect(ketoCheckbox).not.toBeChecked();
     });
 
-    window.alert = jest.fn();
+    test('selecting a dietary pref option unchecks "None"', async () => {
+        getDoc.mockResolvedValueOnce({
+            exists: () => true,
+            data: () => ({
+                username: 'mockUser',
+                dietaryPreferences: ['None'],
+                allergies: [],
+                restrictions: [],
+            }),
+        });
 
-    renderWithRouter(<MainPage />);
-    await waitFor(() => screen.getByText('Welcome, mockUser'));
+        renderWithRouter(<MainPage />);
+        await waitFor(() => screen.getByText('Welcome, mockUser'));
 
-    fireEvent.click(screen.getByText(/save preferences/i));
+        const noneCheckbox = screen.getAllByLabelText('None')[0];
+        const halalCheckbox = screen.getByLabelText('Halal');
 
-    expect(window.alert).toHaveBeenCalledWith(
-      'Please select at least one option for Dietary Preferences, Allergies, and Restrictions.'
-    );
-  });
+        expect(noneCheckbox).toBeChecked();
 
-  test('saves preferences and shows alert then navigates', async () => {
-    getDoc.mockResolvedValueOnce({
-      exists: () => true,
-      data: () => ({
-        username: 'mockUser',
-        dietaryPreferences: ['Halal'],
-        allergies: ['Egg'],
-        restrictions: ['Low-sugar'],
-      }),
+        fireEvent.click(halalCheckbox);
+
+        expect(noneCheckbox).not.toBeChecked();
+        expect(halalCheckbox).toBeChecked();
     });
 
-    setDoc.mockResolvedValueOnce();
-    window.alert = jest.fn();
+    test('alerts if any section is unselected on save', async () => {
+        getDoc.mockResolvedValueOnce({
+            exists: () => true,
+            data: () => ({
+                username: 'mockUser',
+                dietaryPreferences: [],
+                allergies: [],
+                restrictions: [],
+            }),
+        });
 
-    renderWithRouter(<MainPage />, {
-      route: '/main',
+        window.alert = jest.fn();
+
+        renderWithRouter(<MainPage />);
+        await waitFor(() => screen.getByText('Welcome, mockUser'));
+
+        fireEvent.click(screen.getByText(/save preferences/i));
+
+        expect(window.alert).toHaveBeenCalledWith(
+            'Please select at least one option for Dietary Preferences, Allergies, and Restrictions.'
+        );
     });
 
-    await waitFor(() => screen.getByText('Welcome, mockUser'));
+    test('saves preferences and shows alert then navigates', async () => {
+        getDoc.mockResolvedValueOnce({
+            exists: () => true,
+            data: () => ({
+                username: 'mockUser',
+                dietaryPreferences: ['Halal'],
+                allergies: ['Egg'],
+                restrictions: ['Low-sugar'],
+            }),
+        });
 
-    fireEvent.click(screen.getByText(/save preferences/i));
+        setDoc.mockResolvedValueOnce();
+        window.alert = jest.fn();
 
-    await waitFor(() => {
-      expect(setDoc).toHaveBeenCalledWith(
-        doc(db, 'users', 'test-uid'),
-        {
-          dietaryPreferences: ['Halal'],
-          allergies: ['Egg'],
-          restrictions: ['Low-sugar'],
-        },
-        { merge: true }
-      );
-      expect(window.alert).toHaveBeenCalledWith('Preferences saved!');
-    });
-  });
+        renderWithRouter(<MainPage />, { route: '/main' });
 
-  test('selecting "None" unchecks all other allergy options', async () => {
-    getDoc.mockResolvedValueOnce({
-      exists: () => true,
-      data: () => ({
-        username: 'mockUser',
-        dietaryPreferences: [],
-        allergies: ['Nut', 'Shellfish'],
-        restrictions: [],
-      }),
-    });
+        await waitFor(() => screen.getByText('Welcome, mockUser'));
 
-    renderWithRouter(<MainPage />);
-    await waitFor(() => screen.getByText('Welcome, mockUser'));
+        fireEvent.click(screen.getByText(/save preferences/i));
 
-    const nutCheckbox = screen.getByLabelText('Nut');
-    const shellfishCheckbox = screen.getByLabelText('Shellfish');
-    const noneCheckbox = screen.getAllByLabelText('None')[1];
-
-    expect(nutCheckbox).toBeChecked();
-    expect(shellfishCheckbox).toBeChecked();
-
-    fireEvent.click(noneCheckbox);
-
-    expect(noneCheckbox).toBeChecked();
-    expect(nutCheckbox).not.toBeChecked();
-    expect(shellfishCheckbox).not.toBeChecked();
-  });
-
-  test('selecting an allergy option unchecks "None"', async () => {
-    getDoc.mockResolvedValueOnce({
-      exists: () => true,
-      data: () => ({
-        username: 'mockUser',
-        dietaryPreferences: [],
-        allergies: ['None'],
-        restrictions: [],
-      }),
+        await waitFor(() => {
+            expect(setDoc).toHaveBeenCalledWith(
+                doc(db, 'users', 'mockUserId'),
+                {
+                    dietaryPreferences: ['Halal'],
+                    allergies: ['Egg'],
+                    restrictions: ['Low-sugar'],
+                },
+                { merge: true }
+            );
+            expect(window.alert).toHaveBeenCalledWith('Preferences saved!');
+        });
     });
 
-    renderWithRouter(<MainPage />);
-    await waitFor(() => screen.getByText('Welcome, mockUser'));
+    test('selecting "None" unchecks all other allergy options', async () => {
+        getDoc.mockResolvedValueOnce({
+            exists: () => true,
+            data: () => ({
+                username: 'mockUser',
+                dietaryPreferences: [],
+                allergies: ['Nut', 'Shellfish'],
+                restrictions: [],
+            }),
+        });
 
-    const noneCheckbox = screen.getAllByLabelText('None')[1];
-    const dairyCheckbox = screen.getByLabelText('Dairy');
+        renderWithRouter(<MainPage />);
+        await waitFor(() => screen.getByText('Welcome, mockUser'));
 
-    expect(noneCheckbox).toBeChecked();
+        const nutCheckbox = screen.getByLabelText('Nut');
+        const shellfishCheckbox = screen.getByLabelText('Shellfish');
+        const noneCheckbox = screen.getAllByLabelText('None')[1];
 
-    fireEvent.click(dairyCheckbox);
+        expect(nutCheckbox).toBeChecked();
+        expect(shellfishCheckbox).toBeChecked();
 
-    expect(dairyCheckbox).toBeChecked();
-    expect(noneCheckbox).not.toBeChecked();
-  });
+        fireEvent.click(noneCheckbox);
 
-  test('selecting "None" unchecks all other restriction options', async () => {
-    getDoc.mockResolvedValueOnce({
-      exists: () => true,
-      data: () => ({
-        username: 'mockUser',
-        dietaryPreferences: [],
-        allergies: [],
-        restrictions: ['Pork-free', 'Alcohol-free'],
-      }),
+        expect(noneCheckbox).toBeChecked();
+        expect(nutCheckbox).not.toBeChecked();
+        expect(shellfishCheckbox).not.toBeChecked();
     });
 
-    renderWithRouter(<MainPage />);
-    await waitFor(() => screen.getByText('Welcome, mockUser'));
+    test('selecting an allergy option unchecks "None"', async () => {
+        getDoc.mockResolvedValueOnce({
+            exists: () => true,
+            data: () => ({
+                username: 'mockUser',
+                dietaryPreferences: [],
+                allergies: ['None'],
+                restrictions: [],
+            }),
+        });
 
-    const porkFree = screen.getByLabelText('Pork-free');
-    const alcoholFree = screen.getByLabelText('Alcohol-free');
-    const noneCheckbox = screen.getAllByLabelText('None')[2];
+        renderWithRouter(<MainPage />);
+        await waitFor(() => screen.getByText('Welcome, mockUser'));
 
-    expect(porkFree).toBeChecked();
-    expect(alcoholFree).toBeChecked();
+        const noneCheckbox = screen.getAllByLabelText('None')[1];
+        const dairyCheckbox = screen.getByLabelText('Dairy');
 
-    fireEvent.click(noneCheckbox);
+        expect(noneCheckbox).toBeChecked();
 
-    expect(noneCheckbox).toBeChecked();
-    expect(porkFree).not.toBeChecked();
-    expect(alcoholFree).not.toBeChecked();
-  });
+        fireEvent.click(dairyCheckbox);
 
-  test('selecting a restriction option unchecks "None"', async () => {
-    getDoc.mockResolvedValueOnce({
-      exists: () => true,
-      data: () => ({
-        username: 'mockUser',
-        dietaryPreferences: [],
-        allergies: [],
-        restrictions: ['None'],
-      }),
+        expect(dairyCheckbox).toBeChecked();
+        expect(noneCheckbox).not.toBeChecked();
     });
 
-    renderWithRouter(<MainPage />);
-    await waitFor(() => screen.getByText('Welcome, mockUser'));
+    test('selecting "None" unchecks all other restriction options', async () => {
+        getDoc.mockResolvedValueOnce({
+            exists: () => true,
+            data: () => ({
+                username: 'mockUser',
+                dietaryPreferences: [],
+                allergies: [],
+                restrictions: ['Pork-free', 'Alcohol-free'],
+            }),
+        });
 
-    const noneCheckbox = screen.getAllByLabelText('None')[2];
-    const glutenFree = screen.getByLabelText('Gluten-free');
+        renderWithRouter(<MainPage />);
+        await waitFor(() => screen.getByText('Welcome, mockUser'));
 
-    expect(noneCheckbox).toBeChecked();
+        const porkFree = screen.getByLabelText('Pork-free');
+        const alcoholFree = screen.getByLabelText('Alcohol-free');
+        const noneCheckbox = screen.getAllByLabelText('None')[2];
 
-    fireEvent.click(glutenFree);
+        expect(porkFree).toBeChecked();
+        expect(alcoholFree).toBeChecked();
 
-    expect(glutenFree).toBeChecked();
-    expect(noneCheckbox).not.toBeChecked();
-  });
+        fireEvent.click(noneCheckbox);
+
+        expect(noneCheckbox).toBeChecked();
+        expect(porkFree).not.toBeChecked();
+        expect(alcoholFree).not.toBeChecked();
+    });
+
+    test('selecting a restriction option unchecks "None"', async () => {
+        getDoc.mockResolvedValueOnce({
+            exists: () => true,
+            data: () => ({
+                username: 'mockUser',
+                dietaryPreferences: [],
+                allergies: [],
+                restrictions: ['None'],
+            }),
+        });
+
+        renderWithRouter(<MainPage />);
+        await waitFor(() => screen.getByText('Welcome, mockUser'));
+
+        const noneCheckbox = screen.getAllByLabelText('None')[2];
+        const glutenFree = screen.getByLabelText('Gluten-free');
+
+        expect(noneCheckbox).toBeChecked();
+
+        fireEvent.click(glutenFree);
+
+        expect(glutenFree).toBeChecked();
+        expect(noneCheckbox).not.toBeChecked();
+    });
 });
