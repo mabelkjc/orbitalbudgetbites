@@ -19,6 +19,14 @@ function Navbar() {
             localStorage.removeItem('searchTerm');
             localStorage.removeItem('sortBy');
             localStorage.removeItem('budgetBitesLocation');
+
+            localStorage.removeItem('communitySortBy');
+            localStorage.removeItem('showFollowingOnly');
+
+            sessionStorage.removeItem('visiblePosts');
+            sessionStorage.removeItem('anchorPostId');
+            sessionStorage.removeItem('scrollY');
+
             navigate('/login');
         } catch (error) {
               console.error('Logout failed:', error);
