@@ -6,24 +6,23 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { getDoc } from 'firebase/firestore';
 
 jest.mock('firebase/auth', () => ({
-  signInWithEmailAndPassword: jest.fn(),
+    signInWithEmailAndPassword: jest.fn(),
 }));
 
 jest.mock('firebase/firestore', () => ({
-  getDoc: jest.fn(),
-  doc: jest.fn(),
+    getDoc: jest.fn(),
+    doc: jest.fn(),
 }));
 
 jest.mock('../firebase', () => ({
-  auth: {},
-  db: {},
+    auth: {},
+    db: {},
 }));
 
-// manually set up spyable navigate mock
 const mockNavigate = jest.fn();
 jest.mock('react-router', () => ({
-  ...jest.requireActual('react-router'),
-  useNavigate: () => mockNavigate,
+    ...jest.requireActual('react-router'),
+    useNavigate: () => mockNavigate,
 }));
 
 describe('LoginPage', () => {
