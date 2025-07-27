@@ -194,10 +194,7 @@
 
 .card-row.recipes {
     max-height: 370px;
-}
-
-.card-row.posts {
-    max-height: 310px;
+    overflow: visible;
 }
 
 .card-row::-webkit-scrollbar {
@@ -254,3 +251,4 @@
 .clickable:hover {
     text-decoration: underline;
 }
+

@@ -308,7 +308,7 @@ function ProfilePage() {
                     <h4>Liked by Me</h4>
                     <div className="card-wrapper">
                         {likedPosts.length > 0 ? (
-                            <div className="card-row posts">
+                            <div className="card-row recipes">
                                 {likedPosts.map(post => (
                                     <PostCard key={post.id} post={post} visiblePosts={0} />
                                 ))}
@@ -321,7 +321,7 @@ function ProfilePage() {
                     <h4>Created by Me</h4>
                     <div className="card-wrapper">
                         {createdPosts.length > 0 ? (
-                            <div className="card-row posts">
+                            <div className="card-row recipes">
                                 {createdPosts.map(post => (
                                     <PostCard key={post.id} post={post} visiblePosts={0} />
                                 ))}

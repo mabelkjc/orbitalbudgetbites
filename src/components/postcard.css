@@ -11,8 +11,7 @@
     transition: transform 0.2s ease;
     display: flex;
     flex-direction: column;
-    width: 100%;
-    max-width: 350px;
+    width: 325px;
     height: 100%;
 }
 
