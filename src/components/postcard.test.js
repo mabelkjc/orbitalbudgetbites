@@ -65,3 +65,4 @@ describe('PostCard Component', () => {
         expect(screen.getByText('💬 0')).toBeInTheDocument();
     });
 });
+
