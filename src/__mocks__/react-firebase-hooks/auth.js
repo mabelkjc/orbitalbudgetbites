@@ -1,0 +1,1 @@
+export const useAuthState = () => [{ uid: 'mockUserId' }, false, null];

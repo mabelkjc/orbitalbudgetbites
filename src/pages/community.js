@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import Navbar from '../components/navbar';
-import PostCard from '../components/postcard';
-import uploadToCloudinary from '../cloudinaryUpload';
+import Navbar from '../components/navbar.js';
+import PostCard from '../components/postcard.js';
+import uploadToCloudinary from '../cloudinaryUpload.js';
 import { collection, addDoc, getDocs, getDoc, doc, orderBy, query, serverTimestamp } from 'firebase/firestore';
-import { auth, db } from '../firebase';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth, db } from '../firebase.js';
+import { useAuthState } from 'react-firebase-hooks/auth/dist/index.esm.js';
 import './community.css';
 
 function CommunityPage() {

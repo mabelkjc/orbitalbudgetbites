@@ -1,4 +1,4 @@
-const axios = require('axios');
+import axios from 'axios';
 
 const uploadToCloudinary = async (file) => {
     const formData = new FormData();
@@ -8,11 +8,16 @@ const uploadToCloudinary = async (file) => {
     try {
         const response = await axios.post(
             'https://api.cloudinary.com/v1_1/dgab2ofda/image/upload',
-            formData
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            }
         );
         return response.data.secure_url;
     } catch (error) {
-        console.error('Cloudinary upload failed:', error);
+        console.error('Cloudinary upload failed:', error.response?.data || error.message);
         return null;
     }
 };

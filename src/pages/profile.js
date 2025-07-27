@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
-
-import { auth, db } from '../firebase';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import { useNavigate, useParams } from 'react-router';
+import { auth, db } from '../firebase.js';
+import { useAuthState } from 'react-firebase-hooks/auth/dist/index.esm.js';
 import { doc, getDoc, setDoc, collection, getDocs, query, where } from 'firebase/firestore';
-import Navbar from '../components/navbar';
-import RecipeCard from '../components/recipecard';
-import PostCard from '../components/postcard';
+import Navbar from '../components/navbar.js';
+import RecipeCard from '../components/recipecard.js';
+import PostCard from '../components/postcard.js';
 import './profile.css';
 
 function ProfilePage() {

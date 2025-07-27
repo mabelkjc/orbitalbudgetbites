@@ -4,9 +4,9 @@ import {
   doc, getDoc, collection, getDocs, addDoc, serverTimestamp,
   query, orderBy, setDoc
 } from 'firebase/firestore';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { db, auth } from '../firebase';
-import Navbar from '../components/navbar';
+import { useAuthState } from 'react-firebase-hooks/auth/dist/index.esm.js';
+import { db, auth } from '../firebase.js';
+import Navbar from '../components/navbar.js';
 import './recipedetailpage.css';
 
 function RecipeDetail() {
@@ -278,8 +278,9 @@ function RecipeDetail() {
                         onChange={(e) => setNewRating(parseInt(e.target.value))}
                         required
                     />
-                    <label>Comment:</label>
+                    <label htmlFor="review-comment">Comment:</label>
                     <textarea
+                        id="review-comment"
                         value={newComment}
                         onChange={(e) => setNewComment(e.target.value)}
                         rows="4"

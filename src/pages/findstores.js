@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { GoogleMap, LoadScript, Marker, Autocomplete } from '@react-google-maps/api';
-import Navbar from '../components/navbar';
+import Navbar from '../components/navbar.js';
 import { useNavigate, useLocation } from 'react-router';
 import './findstores.css';
 
