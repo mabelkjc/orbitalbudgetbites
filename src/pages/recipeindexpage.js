@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { getDocs, collection } from 'firebase/firestore';
-import { db } from '../firebase';
-import Navbar from '../components/navbar';
-import RecipeCard from '../components/recipecard';
+import { db } from '../firebase.js';
+import Navbar from '../components/navbar.js';
+import RecipeCard from '../components/recipecard.js';
 import './recipeindexpage.css';
 
 function RecipeIndexPage() {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { doc, collection, getDocs } from 'firebase/firestore';
-import { db } from '../firebase';
+import { db } from '../firebase.js';
 import './recipecard.css';
 
 const RecipeCard = ({ recipe, selectedIngredients, filteredRecipes, fromPage }) => {

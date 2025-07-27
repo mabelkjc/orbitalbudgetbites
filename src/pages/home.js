@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router';
-import { auth, db } from '../firebase';
+import { auth, db } from '../firebase.js';
 import { collection, getDocs } from 'firebase/firestore';
 import './home.css';
 import Navbar from '../components/navbar.js';
-import RecipeCard from '../components/recipecard';
+import RecipeCard from '../components/recipecard.js';
 
 function HomePage() {
     const navigate = useNavigate();

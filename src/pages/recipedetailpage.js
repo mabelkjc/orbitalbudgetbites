@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useLocation, useNavigate, Link } from 'react-router-dom';
+import { useParams, useLocation, useNavigate, Link } from 'react-router';
 import {
   doc, getDoc, collection, getDocs, addDoc, serverTimestamp,
   query, orderBy, setDoc
 } from 'firebase/firestore';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { db, auth } from '../firebase';
-import Navbar from '../components/navbar';
+import { useAuthState } from 'react-firebase-hooks/auth/dist/index.esm.js';
+import { db, auth } from '../firebase.js';
+import Navbar from '../components/navbar.js';
 import './recipedetailpage.css';
 
 function RecipeDetail() {

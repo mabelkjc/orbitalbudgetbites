@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { auth, db } from '../firebase';
+import { auth, db } from '../firebase.js';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import './main.css';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 
 const dietaryOptions = [
     'Vegetarian',

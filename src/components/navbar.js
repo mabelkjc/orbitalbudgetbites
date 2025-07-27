@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { auth, db } from '../firebase';
+import { Link, useNavigate } from 'react-router';
+import { auth, db } from '../firebase.js';
 import { signOut } from 'firebase/auth';
-import { useAuthState } from 'react-firebase-hooks/auth';
+import { useAuthState } from 'react-firebase-hooks/auth/dist/index.esm.js';
 import { doc, getDoc } from 'firebase/firestore';
 import './navbar.css';
 
