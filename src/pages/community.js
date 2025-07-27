@@ -21,6 +21,7 @@ function CommunityPage() {
     const [showFollowingOnly, setShowFollowingOnly] = useState(() => {
         return localStorage.getItem('showFollowingOnly') === 'true';
     });
+    const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
         const fetchPosts = async () => {
@@ -127,9 +128,17 @@ function CommunityPage() {
             return;
         }
 
+        if (!caption) {
+            alert('Please write a caption.');
+            return;
+        }
+
+        setUploading(true);
+
         const imageUrl = await uploadToCloudinary(imageFile);
         if (!imageUrl) {
             alert('Image upload failed.');
+            setUploading(false);
             return;
         }
 
@@ -176,6 +185,8 @@ function CommunityPage() {
         } catch (error) {
             console.error('Failed to save post:', error);
             alert('Failed to save post.');
+        } finally {
+            setUploading(false);
         }
 
     };
@@ -273,8 +284,8 @@ function CommunityPage() {
                     }}>
                         Clear
                     </button>
-                    <button className="submit-btn" onClick={handleSubmitPost}>
-                        Submit
+                    <button className="submit-btn" onClick={handleSubmitPost} disabled={uploading}>
+                        {uploading ? 'Submitting...' : 'Submit'}
                     </button>
                 </div>
             </div>
