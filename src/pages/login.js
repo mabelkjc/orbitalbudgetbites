@@ -73,20 +73,22 @@ function LoginPage() {
             <section className="login-section">
             <h2>Already have an account?</h2>
             <form className="login-form" onSubmit={handleLogin}>
-                <label>Email</label>
+                <label htmlFor="email">Email</label>
                 <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
                 />
 
-                <label>Password</label>
+                <label htmlFor="password">Password</label>
                 <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
                 />
 
                 <button type="submit" className="login-btn">Log In</button>
