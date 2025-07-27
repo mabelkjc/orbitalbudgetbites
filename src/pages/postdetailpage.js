@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router';
-import { doc, getDoc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { useParams, useNavigate, Link } from 'react-router';
+import { doc, getDoc, updateDoc, arrayUnion, deleteDoc } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import Navbar from '../components/navbar';
@@ -27,6 +27,20 @@ function PostDetailPage() {
         };
         fetchPost();
     }, [postId]);
+
+    const handleDeletePost = async () => {
+        const confirmed = window.confirm('Are you sure you want to delete this post?');
+        if (!confirmed) return;
+
+        try {
+            await deleteDoc(doc(db, 'communityPosts', postId));
+            alert('Post deleted successfully!');
+            navigate('/community');
+        } catch (error) {
+            console.error('Failed to delete post:', error);
+            alert('Failed to delete post.');
+        }
+    };
 
     const toggleLikePost = async () => {
         if (!user || !post) return;
@@ -83,6 +97,21 @@ function PostDetailPage() {
         setNewComment('');
     };
 
+    const handleDeleteComment = async (createdAt) => {
+        const confirmed = window.confirm('Delete this comment?');
+        if (!confirmed) return;
+
+        const updatedComments = (post.comments || []).filter(c => c.createdAt !== createdAt);
+        try {
+            const postRef = doc(db, 'communityPosts', postId);
+            await updateDoc(postRef, { comments: updatedComments });
+            setPost(prev => ({ ...prev, comments: updatedComments }));
+        } catch (error) {
+            console.error('Failed to delete comment:', error);
+            alert('Could not delete comment.');
+        }
+    };
+
     if (!post) return <div>Loading...</div>;
 
     const formattedDate = post.createdAt?.toDate
@@ -93,17 +122,26 @@ function PostDetailPage() {
         <div className="post-detail-wrapper">
             <Navbar />
             <div className="post-detail-container">
-                <button className="back-button" onClick={() => navigate(-1)}>← Back</button>
+                <div className="post-detail-controls">
+                    <button className="back-button" onClick={() => navigate(-1)}>← Back</button>
+                    {user?.uid === post.userId && (
+                        <button className="delete-post-button" onClick={handleDeletePost}>🗑️ Delete</button>
+                    )}
+                </div>
 
                 <div className="post-header">
                     <div className="author-info">
                         <img
-                            src={post.profilePicture || '/default-profile.png'}
+                            src={post.profilePicture || '/avatars/default-profile.png'}
                             alt="profile"
                             className="author-image"
+                            onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = '/avatars/default-profile.png';
+                            }}
                         />
                         <div>
-                            <p className="author">{post.username}</p>
+                            <Link to={`/profile/${post.userId}`} className="author">{post.username}</Link>
                             <p className="timestamp">{formattedDate}</p>
                         </div>
                     </div>
@@ -148,7 +186,14 @@ function PostDetailPage() {
                     <div className="comment-list">
                         {(post.comments || []).map((c, i) => (
                             <div key={i} className="comment-card">
-                                <strong>{c.username}</strong>
+                                <div className="comment-header">
+                                    <Link to={`/profile/${c.userId}`} className="comment-author">
+                                        {c.username}
+                                    </Link>
+                                    {user?.uid === c.userId && (
+                                        <button className="delete-comment-button" onClick={() => handleDeleteComment(c.createdAt)}>🗑️ Delete</button>
+                                    )}
+                                </div>
                                 <div className="comment-date">
                                     {new Date(c.createdAt).toLocaleDateString()} {new Date(c.createdAt).toLocaleTimeString()}
                                 </div>

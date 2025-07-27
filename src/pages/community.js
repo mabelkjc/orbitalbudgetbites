@@ -16,17 +16,48 @@ function CommunityPage() {
     const [loadingPosts, setLoadingPosts] = useState(true);
     const [user] = useAuthState(auth);
     const [visiblePosts, setVisiblePosts] = useState(6);
+    const [sortBy, setSortBy] = useState(() => localStorage.getItem('communitySortBy') || 'Newest');
+    const [dropdownVisible, setDropdownVisible] = useState(false);
+    const [showFollowingOnly, setShowFollowingOnly] = useState(() => {
+        return localStorage.getItem('showFollowingOnly') === 'true';
+    });
 
     useEffect(() => {
         const fetchPosts = async () => {
             try {
                 const q = query(collection(db, 'communityPosts'), orderBy('createdAt', 'desc'));
                 const querySnapshot = await getDocs(q);
-                const postsArray = querySnapshot.docs.map(doc => ({
+                let postsArray = querySnapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data(),
                 }));
-                setPosts(postsArray);
+
+                if (showFollowingOnly && user) {
+                    const userRef = doc(db, 'users', user.uid);
+                    const userSnap = await getDoc(userRef);
+                    if (userSnap.exists()) {
+                        const followingList = userSnap.data().following || [];
+                        const followingUids = followingList.map(f =>
+                            typeof f === 'object' ? f.uid : f
+                        );
+                        postsArray = postsArray.filter(post =>
+                            followingUids.includes(post.userId)
+                        );
+                    }
+                }
+
+                const sorted = [...postsArray];
+                if (sortBy === 'Newest') {
+                    sorted.sort((a, b) => b.createdAt?.seconds - a.createdAt?.seconds);
+                } else if (sortBy === 'Oldest') {
+                    sorted.sort((a, b) => a.createdAt?.seconds - b.createdAt?.seconds);
+                } else if (sortBy === 'Most Likes') {
+                    sorted.sort((a, b) => (b.likes?.length || 0) - (a.likes?.length || 0));
+                } else if (sortBy === 'Most Comments') {
+                    sorted.sort((a, b) => (b.comments?.length || 0) - (a.comments?.length || 0));
+                }
+
+                setPosts(sorted);
             } catch (error) {
                 console.error('Failed to load posts:', error);
             } finally {
@@ -34,7 +65,49 @@ function CommunityPage() {
             }
         };
         fetchPosts();
+    }, [sortBy, showFollowingOnly, user]);
+
+    useEffect(() => {
+        const savedCount = sessionStorage.getItem('visiblePosts');
+        const anchorPostId = sessionStorage.getItem('anchorPostId');
+
+        if (savedCount) {
+            setVisiblePosts(parseInt(savedCount));
+        }
+
+        if (anchorPostId) {
+            const scrollToAnchor = () => {
+                const element = document.getElementById(`post-${anchorPostId}`);
+                if (element) {
+                    element.scrollIntoView({ behavior: 'auto', block: 'start' });
+                }
+            };
+            const timeout = setTimeout(scrollToAnchor, 150);
+            return () => clearTimeout(timeout);
+        }
     }, []);
+
+    useEffect(() => {
+        const clearSession = () => {
+            sessionStorage.removeItem('visiblePosts');
+            sessionStorage.removeItem('scrollY');
+            sessionStorage.removeItem('anchorPostId');
+        };
+        window.addEventListener('beforeunload', clearSession);
+        return () => window.removeEventListener('beforeunload', clearSession);
+    }, []);
+
+    const handleToggleFollowing = (e) => {
+        const value = e.target.checked;
+        setShowFollowingOnly(value);
+        localStorage.setItem('showFollowingOnly', value);
+    };
+
+    const handleSortChange = (value) => {
+        setSortBy(value);
+        localStorage.setItem('communitySortBy', value);
+        setDropdownVisible(false);
+    };
 
     const handleFileChange = (e) => {
         const file = e.target.files?.[0];
@@ -61,7 +134,7 @@ function CommunityPage() {
         }
 
         let username = '';
-        let profilePicture = '/default-profile.png';
+        let profilePicture = '/avatars/default-profile.png';
         try {
             const userRef = doc(db, 'users', user.uid);
             const userSnap = await getDoc(userRef);
@@ -105,7 +178,6 @@ function CommunityPage() {
             alert('Failed to save post.');
         }
 
-        console.log('Image uploaded to:', imageUrl); // to remove
     };
 
     if (loadingPosts) return <div>Loading...</div>;
@@ -116,12 +188,37 @@ function CommunityPage() {
         <div className="community-container">
             <h2 className="community-header">Community</h2>
 
+            <div className="community-sort-wrapper">
+                <span className="sort-label">Sort by:</span>
+                <button className="drop-btn" onClick={() => setDropdownVisible(!dropdownVisible)}>
+                    {sortBy} ▼
+                </button>
+                {dropdownVisible && (
+                    <div className="dropdown-content">
+                        <button onClick={() => handleSortChange('Newest')}>Newest</button>
+                        <button onClick={() => handleSortChange('Oldest')}>Oldest</button>
+                        <button onClick={() => handleSortChange('Most Likes')}>Most Likes</button>
+                        <button onClick={() => handleSortChange('Most Comments')}>Most Comments</button>
+                    </div>
+                )}
+            </div>
+            <div className="community-toggle-wrapper">
+                <label>
+                    <input
+                        type="checkbox"
+                        checked={showFollowingOnly}
+                        onChange={handleToggleFollowing}
+                    />
+                    &nbsp;Only show posts from users I follow
+                </label>
+            </div>
+
             <div className="post-grid">
                 {posts.length === 0 ? (
                     <p className="no-posts-message">There are no posts found.</p>
                 ) : (
                     posts.slice(0, visiblePosts).map(post => (
-                        <PostCard key={post.id} post={post} />
+                        <PostCard key={post.id} post={post} visiblePosts={visiblePosts}/>
                     ))
                 )}
             </div>
